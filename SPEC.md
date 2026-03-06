@@ -1,438 +1,584 @@
-
 # SPEC.md
-WorldClassicsJP Specification
+WorldClassicsJP 仕様書
+
+バージョン: 1.1.0
+最終更新日: 2026-03-06
 
 ---
 
-# 1. Overview
+# 1. 概要
 
-WorldClassicsJP is an automated publishing system that translates public domain world literature into Japanese and publishes it as a static website.
+WorldClassicsJP は、パブリックドメインの世界文学を日本語に翻訳し、静的ウェブサイトとして公開する自動出版システムである。
 
-The system retrieves texts from public domain sources (such as Project Gutenberg), translates them into Japanese using AI, and publishes them on GitHub Pages.
+Project Gutenberg などの公共ドメインソースからテキストを取得し、AIを用いて日本語に翻訳し、GitHub Pages 上で公開する。
 
-The goal is to build an AI-powered literature publishing platform where classic works from around the world become accessible to Japanese readers.
-
----
-
-# 2. Goals
-
-Primary goals:
-
-- Translate public domain world literature into Japanese
-- Publish translated works automatically
-- Support both short works and long-form serialized works
-- Create author-based navigation
-- Enrich content using public domain images
-- Generate advertising revenue using Google AdSense
+目標は、AIを活用した文学出版プラットフォームを構築し、世界の名作を日本語読者が読めるようにすることである。
 
 ---
 
-# 3. Key Design Principles
+# 2. 目標
 
-1. Full automation
-2. Static site publishing
-3. Reusable architecture
-4. AI-agent driven workflow
-5. Low operational cost
-6. Mobile-first user experience
+主な目標：
+
+- パブリックドメインの世界文学を日本語に翻訳する
+- 翻訳作品を自動的に公開する
+- 短編・長編連載の両方に対応する
+- 著者別ナビゲーションを提供する
+- パブリックドメイン画像でコンテンツを充実させる
+- Google AdSense による広告収入を得る
 
 ---
 
-# 4. System Architecture
+# 3. 設計原則
 
-Pipeline:
+1. 完全自動化
+2. 静的サイト公開
+3. 再利用可能なアーキテクチャ
+4. AI エージェント駆動のワークフロー
+5. 低運用コスト
+6. モバイルファーストのユーザー体験
 
-Source Text
+---
+
+# 4. システムアーキテクチャ
+
+パイプライン：
+
+```
+原文テキスト
 ↓
-Fetcher
+Fetcher（取得）
 ↓
-Preprocessor (Local LLM)
+Preprocessor（ローカル LLM）
 ↓
-Translator (Codex CLI)
+Translator（Codex CLI / GPT-5.4）
 ↓
-Publisher
+QualityChecker（品質チェック AI エージェント）
+↓
+Publisher（公開）
 ↓
 GitHub Pages
+```
 
-Automation is triggered by OpenClaw cron execution.
-
----
-
-# 5. Execution Environment
-
-Automation is executed by OpenClaw.
-
-OpenClaw responsibilities:
-
-- run scheduled jobs via cron
-- orchestrate AI agents
-- execute translation commands
-- commit and push results to GitHub
+自動化は OpenClaw の cron 実行によってトリガーされる。
 
 ---
 
-# 6. Scheduling
+# 5. 実行環境
 
-Execution frequency: once per day.
+自動化は OpenClaw によって実行される。
 
-Cron execution is handled by OpenClaw.
+## OpenClaw とは
 
-Example:
+OpenClaw（旧称: Clawdbot / Moltbot）は、ユーザー専有のミニPC上で動作するオープンソースの自律型 AI エージェントである。Codex CLI を活用し、スケジュール実行・ファイル操作・Web ブラウジング・シェルコマンド実行を自律的に行う。
 
+OpenClaw の責務：
+
+- cron によるスケジュールジョブの実行
+- AI エージェントのオーケストレーション
+- 翻訳コマンドの実行
+- 翻訳結果の GitHub へのコミット・プッシュ
+
+参考: https://openclaw.ai/
+
+---
+
+# 6. スケジューリング
+
+実行頻度：1日1回
+
+cron 実行は OpenClaw が管理する。
+
+例：
+
+```
 0 3 * * *
+```
 
-This triggers the full translation pipeline.
+これにより翻訳パイプライン全体がトリガーされる。
 
 ---
 
-# 7. Translation Engine
+# 7. 翻訳エンジン
 
-Translation is executed using Codex CLI.
+翻訳は Codex CLI（モデル: GPT-5.4）を使用して実行される。
 
-Important requirement:
+重要要件：
 
-Codex CLI must run in non-interactive execution mode.
+Codex CLI は非インタラクティブ実行モードで動作させること。
 
-Example:
+例：
 
+```
 codex exec translate_prompt.md
+```
 
-The Codex CLI flat-rate plan is used to control translation cost.
-
----
-
-# 8. Local LLM Usage
-
-Local LLMs should assist with:
-
-- paragraph segmentation
-- text cleanup
-- metadata generation
-- summaries
-- title normalization
-
-Local models may run using Ollama or similar systems.
-
-Advantages:
-
-- reduce API token usage
-- enable offline processing
-- faster preprocessing
+コスト管理のため Codex CLI の定額プラン（ChatGPT Plus）を使用する。
 
 ---
 
-# 9. Source Data
+# 8. 翻訳プロンプト設計
 
-Primary sources:
+翻訳品質はプロンプト設計に大きく依存する。以下の方針に従うこと。
+
+## 8.1 文体・表記方針
+
+- 文体：常体（だ・である調）を基本とする
+- 固有名詞：原語のカタカナ表記を優先する
+- 文化的背景：直訳を避け、日本語読者に自然な表現を使う
+- 段落構造：原文の段落分けを尊重する
+
+## 8.2 プロンプトファイル
+
+翻訳プロンプトは `translate_prompt.md` として管理する。
+
+プロンプトには以下を含めること：
+
+- 作品タイトル・著者名
+- 翻訳対象テキスト（セグメント単位）
+- 文体・表記ルール
+- 翻訳品質の注意事項
+
+## 8.3 プロンプト更新方針
+
+翻訳品質の問題が検出された場合はプロンプトを改善し、バージョン管理する。
+
+---
+
+# 9. 品質チェック AI エージェント
+
+翻訳後に品質チェック専用の AI エージェントを実行する。
+
+## 9.1 チェック項目
+
+- 日本語として自然な文章になっているか
+- 誤訳・意味の欠落がないか
+- 固有名詞の表記ゆれがないか
+- 段落構造が原文と対応しているか
+- 文字化け・記号の異常がないか
+
+## 9.2 使用モデル
+
+品質チェックはローカル LLM（Ollama 等）を使用し、API コストを抑える。
+
+## 9.3 チェック結果
+
+- 合格：Publisher へ進む
+- 不合格：エラーログに記録し、翻訳をリトライする（§16 参照）
+
+---
+
+# 10. ローカル LLM の使用
+
+ローカル LLM（Ollama 等）は以下の用途で使用する：
+
+- 段落分割
+- テキストクリーニング
+- メタデータ生成
+- 要約
+- タイトル正規化
+- 品質チェック（§9 参照）
+
+ローカル LLM は2台の専用マシンで動作し、無制限かつ無料で使用できる。
+
+利点：
+
+- API トークン使用量を削減する
+- オフライン処理が可能
+- 前処理が高速化される
+
+---
+
+# 11. ソースデータ
+
+主なソース：
 
 - Project Gutenberg
 - Internet Archive
-- other public domain literature repositories
+- その他パブリックドメイン文学リポジトリ
 
-Each work must include:
+各作品には以下を含めること：
 
-- title
-- author
-- source URL
-- public domain confirmation
-
----
-
-# 10. Work Classification
-
-Works are classified by length.
-
-short
-medium
-long
-
-Example thresholds:
-
-short: < 30,000 characters
-medium: 30,000–150,000 characters
-long: > 150,000 characters
+- タイトル
+- 著者名
+- ソース URL
+- パブリックドメイン確認情報
 
 ---
 
-# 11. Publication Unit
+# 12. 著作権ポリシー
 
-Short works:
+## 12.1 基本方針
 
-Published in a single execution.
+本システムはパブリックドメイン作品のみを対象とする。
 
-Long works:
+## 12.2 国別著作権の注意事項
 
-Published in serialized parts.
+Project Gutenberg は米国著作権法に基づきパブリックドメインと判断した作品を公開している。しかし、国によって保護期間が異なるため、日本国内での公開には個別確認が必要な場合がある。
 
-Preferred segmentation:
+日本の著作権保護期間：著作者の死後 **70年**（2018年法改正により50年から延長）
 
-- chapter boundaries
-- paragraph blocks if chapters exceed daily limit
+米国では合法でも日本では保護対象となり得る例：
 
----
+- 1955〜1967年に亡くなった著者の作品は、日本では 2025〜2037年まで保護対象
+- 1928年以前に出版された米国パブリックドメイン作品でも、著者の没年次第では日本での公開に注意が必要
 
-# 12. Daily Translation Limit
+## 12.3 確認手順
 
-To control cost and execution time:
-
-Maximum translation volume per day must be defined.
-
-Example:
-
-max_chars_per_day = 12000
-
-If a chapter exceeds this limit, it must be subdivided.
+作品登録時に著者の没年を確認し、`没年 + 70年 < 現在年` であることを検証する。確認結果は作品メタデータに記録する。
 
 ---
 
-# 13. Serialization Policy
+# 13. 作業分類
 
-If a long work begins:
+作品は文字数で分類する。
 
-The system must continue publishing subsequent parts until the work is complete.
-
-Do not switch works during serialization unless explicitly configured.
+| 分類 | 文字数 |
+|------|--------|
+| short（短編） | 30,000文字未満 |
+| medium（中編） | 30,000〜150,000文字 |
+| long（長編） | 150,000文字超 |
 
 ---
 
-# 14. Site Structure
+# 14. 公開単位
 
-Example:
+## 短編
 
+1回の実行で完結させて公開する。
+
+## 長編
+
+分割して連載形式で公開する。
+
+分割の優先順位：
+
+1. 章の区切り
+2. 章が1日の上限を超える場合は段落ブロック単位で分割
+
+---
+
+# 15. 1日の翻訳量上限
+
+コストと実行時間を管理するため、1日あたりの翻訳量を以下のように段階的に設定する。
+
+Codex CLI の定額プラン（ChatGPT Plus）には1日あたりのトークン使用上限があるため、最初は少量から始め、問題がなければ徐々に増やす。
+
+| フェーズ | 上限文字数 | 条件 |
+|---------|-----------|------|
+| 初期（Phase 1） | 12,000文字/日 | 運用開始時 |
+| 拡張（Phase 2） | 24,000文字/日 | Phase 1 で2週間以上安定稼働後 |
+| 最大（Phase 3） | 48,000文字/日 | Phase 2 で2週間以上安定稼働後 |
+
+章が上限を超える場合は分割する。
+
+---
+
+# 16. 連載ポリシー
+
+長編作品の連載が開始した場合：
+
+- 作品が完結するまで後続パートを継続して公開する
+- 明示的に設定しない限り、連載中に別作品に切り替えない
+
+---
+
+# 17. エラーハンドリングとリトライ
+
+## 17.1 翻訳失敗時
+
+- 状態を更新しない
+- エラーをログに記録する
+- 最大3回リトライする
+- 3回すべて失敗した場合：翻訳処理をそのセグメントで停止する
+
+## 17.2 翻訳ステータス表示
+
+作品の翻訳状態をタイトルに付記する：
+
+| 状態 | 表示例 |
+|------|--------|
+| 翻訳処理中 | `ロビンソン・クルーソー【翻訳中】` |
+| 翻訳完了 | `ロビンソン・クルーソー` |
+| 翻訳中断（3回失敗） | `ロビンソン・クルーソー【翻訳未完】` |
+
+## 17.3 公開失敗時
+
+- コミットを中断する
+- 前の状態を保持する
+- エラーをログに記録し、次の実行サイクルでリトライする（最大3回）
+
+---
+
+# 18. 状態管理
+
+システムの状態は `state.json` で管理する。
+
+例：
+
+```json
+{
+  "next_work_id": 5,
+  "current_work_id": 3,
+  "current_part": 4,
+  "current_work_status": "active",
+  "last_processed_date": "2026-03-06",
+  "retry_count": 0
+}
+```
+
+ステータス一覧：
+
+| ステータス | 説明 |
+|-----------|------|
+| active | 現在連載中 |
+| paused | 一時停止中 |
+| complete | 翻訳完了 |
+| exhausted | ソースが尽きた |
+| failed | 最大リトライ回数超過で中断 |
+
+## 18.1 ファイルの整合性保護
+
+`state.json` の書き込みは必ずアトミック操作で行う：
+
+1. 一時ファイル（`state.json.tmp`）に書き込む
+2. 検証後、アトミックリネーム（`mv` 等）で本番ファイルに置き換える
+3. 並列実行を防ぐため、処理開始時にロックファイル（`state.lock`）を作成し、終了時に削除する
+4. ロックファイルが残存している場合は前回の実行が異常終了したと判断し、ログに記録の上でロックを解除してから処理を開始する
+
+---
+
+# 19. サイト構造
+
+```
 /
-index.html
-authors/
-works/
-assets/
-rss.xml
-sitemap.xml
-robots.txt
-
-Example work structure:
-
-/works/<work-slug>/index.html
-/works/<work-slug>/part-001/index.html
-/works/<work-slug>/part-002/index.html
+├── index.html
+├── authors/
+│   ├── index.html
+│   └── <author-slug>/
+│       └── index.html
+├── works/
+│   └── <work-slug>/
+│       ├── index.html
+│       ├── part-001/
+│       │   └── index.html
+│       └── part-002/
+│           └── index.html
+├── assets/
+│   └── images/
+│       ├── authors/
+│       ├── illustrations/
+│       └── decorative/
+├── rss.xml
+├── sitemap.xml
+└── robots.txt
+```
 
 ---
 
-# 15. Author Pages
+# 20. 著者ページ
 
-Author navigation is mandatory.
+著者ナビゲーションは必須とする。
 
-Structure:
+構造：
 
+```
 /authors/index.html
 /authors/<author-slug>/index.html
+```
 
-Author pages include:
+著者ページに含める情報：
 
-- author portrait
-- biography summary
-- list of translated works
-- progress for serialized works
+- 著者ポートレート
+- 略歴サマリー
+- 翻訳済み作品の一覧
+- 連載作品の進捗
 
-Example:
+例：
 
-Mark Twain
-Tom Sawyer (In Progress)
-Jumping Frog (Complete)
-
----
-
-# 16. Author Metadata
-
-Required fields:
-
-author_name
-author_slug
-birth_year
-death_year
-description
+```
+マーク・トウェイン
+トム・ソーヤーの冒険（連載中）
+跳び蛙（完結）
+```
 
 ---
 
-# 17. Public Domain Image Policy
+# 21. 著者メタデータ
 
-Public domain images should be used whenever possible.
+必須フィールド：
 
-Sources:
+| フィールド | 説明 |
+|-----------|------|
+| author_name | 著者名（日本語） |
+| author_name_original | 著者名（原語） |
+| author_slug | URL用スラッグ |
+| birth_year | 生年 |
+| death_year | 没年 |
+| description | 略歴（日本語） |
+
+---
+
+# 22. パブリックドメイン画像ポリシー
+
+パブリックドメイン画像を可能な限り使用する。
+
+ソース：
 
 - Wikimedia Commons
 - Wikipedia
-- Project Gutenberg illustrations
-- historical archives
+- Project Gutenberg のイラスト
+- 歴史的アーカイブ
 
-Images improve:
+## 22.1 取得方法
 
-- visual quality
-- reading experience
-- SEO performance
+画像は**手動でダウンロード**して取得する（API 利用なし、コストゼロ）。
 
----
+## 22.2 ライセンス記録
 
-# 18. Author Portrait Support
+各画像にはメタデータを付与する：
 
-Author pages must include portraits when available.
-
-Portraits should be retrieved from Wikimedia Commons.
-
-Example:
-
-/assets/images/authors/mark-twain.jpg
+| フィールド | 説明 |
+|-----------|------|
+| source | 取得元URL |
+| author | 著作者 |
+| license | ライセンス種別 |
+| year | 制作年 |
 
 ---
 
-# 19. Illustration Support
+# 23. 著者ポートレート
 
-Original illustrations should be preserved when available.
+著者ページには、利用可能な場合はポートレートを掲載する。
 
-Placement:
+Wikimedia Commons から手動取得する。
 
-between paragraphs or section boundaries.
+保存場所：
+
+```
+/assets/images/authors/<author-slug>.jpg
+```
 
 ---
 
-# 20. Image Storage
+# 24. イラスト対応
 
-Images stored locally:
+オリジナルのイラストが利用可能な場合は保存する。
 
-/assets/images/authors/
+配置場所：段落間またはセクション境界
+
+保存場所：
+
+```
 /assets/images/illustrations/
-/assets/images/decorative/
+```
 
 ---
 
-# 21. Image Metadata
+# 25. モバイル対応
 
-Each image includes metadata:
+モバイルファーストのレスポンシブデザインを必須とする。
 
-source
-author
-license
-year
+要件：
 
----
+- 読みやすいタイポグラフィ
+- レスポンシブ画像
+- シンプルなナビゲーション
+- 高速なページ読み込み
 
-# 22. Mobile Compatibility
+画像設定：
 
-Mobile-first responsive design required.
-
-Requirements:
-
-- readable typography
-- responsive images
-- simple navigation
-- fast loading pages
-
-Images:
-
-max-width: 100%
-lazy loading enabled
+```css
+max-width: 100%;
+loading: lazy;
+```
 
 ---
 
-# 23. Navigation Requirements
+# 26. ナビゲーション要件
 
-Work pages must include:
+作品ページには以下のナビゲーションを含めること：
 
-Previous
-Next
-Table of Contents
-Author Page
-
----
-
-# 24. Advertising Integration
-
-Google AdSense must appear on all pages.
-
-Pages include:
-
-- homepage
-- author pages
-- work pages
-- serialized pages
-
-Recommended placements:
-
-header
-mid-article
-footer
-
-Advertising must not disrupt reading.
+- 前へ
+- 次へ
+- 目次
+- 著者ページ
 
 ---
 
-# 25. State Management
+# 27. 広告統合
 
-System state tracked in:
+Google AdSense をすべてのページに表示する。
 
-state.json
+対象ページ：
 
-Example:
+- トップページ
+- 著者ページ
+- 作品ページ
+- 連載ページ
 
-next_work_id
-current_part
-current_work_status
-last_processed_date
+推奨配置：
 
-Statuses:
+- ヘッダー
+- 記事中央
+- フッター
 
-active
-paused
-exhausted
-
----
-
-# 26. Error Handling
-
-If translation fails:
-
-- do not update state
-- log error
-- retry next cycle
-
-If publishing fails:
-
-- abort commit
-- preserve previous state
+広告は読書体験を妨げないこと。
 
 ---
 
-# 27. Repository
+# 28. RSS・サイトマップの自動更新
 
-Repository:
+RSS フィード（`rss.xml`）およびサイトマップ（`sitemap.xml`）は、パイプライン実行時に**自動更新**する。
+
+更新タイミング：Publisher ステップの完了後、GitHub へのコミット前に生成・更新する。
+
+---
+
+# 29. SEO 戦略
+
+SEO 改善項目：
+
+- 著者ページ
+- 画像 alt テキスト（日本語）
+- 構造化メタデータ
+- RSS フィード
+- サイトマップ
+
+---
+
+# 30. リポジトリ
+
+リポジトリ：
 
 https://github.com/garyohosu/WorldClassicsJP
 
-Deployment target:
+デプロイ先：
 
 GitHub Pages
 
 ---
 
-# 28. SEO Strategy
+# 31. 言語方針
 
-SEO improvements:
+本システムおよび本仕様書は**日本語を主要言語**とする。
 
-- author pages
-- image alt text
-- structured metadata
-- RSS feed
-- sitemap
+- 仕様書：日本語
+- サイトコンテンツ：日本語
+- コミットメッセージ・コードコメント：日本語を推奨（英語も可）
+- ユーザー向け UI：日本語
 
 ---
 
-# 29. Long-term Vision
+# 32. 長期ビジョン
 
-WorldClassicsJP is an AI-driven world literature archive.
+WorldClassicsJP は AI 駆動の世界文学アーカイブを目指す。
 
-Future possibilities:
+将来の可能性：
 
-- multilingual translation
-- author timeline pages
-- literature discovery tools
-- cross-language literary datasets
+- 多言語翻訳対応
+- 著者タイムラインページ
+- 文学ディスカバリーツール
+- 言語横断的な文学データセット
 
-The platform aims to become a global public domain literature hub.
+本プラットフォームはグローバルなパブリックドメイン文学ハブを目標とする。

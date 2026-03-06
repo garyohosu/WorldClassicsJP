@@ -1,9 +1,9 @@
 # usecase.md
 WorldClassicsJP ユースケース設計
 
-バージョン: 1.1.0
+バージョン: 1.2.0
 最終更新日: 2026-03-06
-対応 SPEC: v1.4.1
+対応 SPEC: v1.5.0
 
 ---
 
@@ -93,10 +93,14 @@ graph TB
 
     LLLM --> UC04
     LLLM --> UC06
+    OC --> UC05
     CODEX --> UC05
+    UC04 --> UC05
     UC05 --> UC06
     UC06 -->|不合格| UC07
     UC07 -->|上限超過| UC08
+    UC09 --> UC10
+    UC10 --> UC11
 
     GH --> UC11
     WIKI --> UC13
@@ -129,14 +133,16 @@ flowchart TD
 
     STATUS_CHECK -->|failed| NOTIFY_FAILED([管理者通知\n処理停止])
     STATUS_CHECK -->|paused / exhausted| END_DAY
-    STATUS_CHECK -->|complete| LOAD_NEXT[次作品を設定\ncurrent_stage=idle]
+    STATUS_CHECK -->|complete| LOAD_NEXT{works_master に\n次の未完了作品あり？}
     STATUS_CHECK -->|active| STAGE_CHECK{current_stage}
 
-    LOAD_NEXT --> STAGE_CHECK
+    LOAD_NEXT -->|YES\n次作品を設定\ncurrent_stage=idle| STAGE_CHECK
+    LOAD_NEXT -->|NO\n全作品完了または\n恒久的取得不能| SET_EXHAUSTED[current_work_status = exhausted\nstate.json 保存]
+    SET_EXHAUSTED --> END_DAY
 
     STAGE_CHECK -->|idle / preprocess| FETCH
-    STAGE_CHECK -->|translate| TRANSLATE
-    STAGE_CHECK -->|quality_check| QA
+    STAGE_CHECK -->|translate\nraw source から\nセグメント再切り出し| TRANSLATE
+    STAGE_CHECK -->|quality_check\nraw source から\nセグメント再切り出し| TRANSLATE
     STAGE_CHECK -->|publish| PUBLISH
 
     FETCH["🔵 UC-03 Fetcher\nsource_url から原文取得"]
@@ -268,24 +274,29 @@ sequenceDiagram
 
 ```mermaid
 stateDiagram-v2
-    [*] --> active : 作品登録・翻訳開始
+    [*] --> active : 作品登録・翻訳開始\n（初期化 or 次作品移行）
 
     active --> active : パート公開成功\ncurrent_part を進める
 
-    active --> failed : 同一セグメント\n2日連続翻訳失敗
+    active --> failed : consecutive_fail_days ≥ 2\n同一セグメント2日連続翻訳失敗
 
-    active --> paused : 手動で一時停止
+    active --> paused : 管理者が state.json を\n手動変更して一時停止
 
     active --> complete : 全パート公開完了\nタイトルから【翻訳中】を除去
 
-    active --> exhausted : ソーステキストが\n取得不能
+    complete --> active : 次の未完了作品あり\n（LOAD_NEXT 成功）
 
-    paused --> active : 手動で再開
+    complete --> exhausted : 次の未完了作品なし\n（LOAD_NEXT 失敗 / キュー枯渇）
+
+    active --> exhausted : 恒久的取得不能\n（source が実質空と判定）
+
+    paused --> active : 管理者が state.json を\n手動変更して再開
 
     failed --> active : 管理者が state.json を\n修正して再開
 
-    complete --> [*]
-    exhausted --> [*]
+    exhausted --> active : works_master に新規作品追加後\n管理者が手動で再開
+
+    exhausted --> [*] : 運用終了
 ```
 
 ---
@@ -333,9 +344,13 @@ stateDiagram-v2
 
 ## 8. 画像自動取得フロー（UC-13）
 
+> **注意**: UC-13 は日次翻訳パイプライン（UC-01〜UC-12）とは**分離した補助ジョブ**として実行する。
+> 実行タイミング：`works_master.json` への新規作品・著者追加時、または手動トリガー時。
+> 画像が未取得でも翻訳公開は妨げられない（未取得の場合は画像枠を非表示）。
+
 ```mermaid
 flowchart TD
-    START([作品登録 / 著者追加]) --> SEARCH
+    START([補助ジョブ起動\nworks_master 更新検出\nまたは手動トリガー]) --> SEARCH
 
     SEARCH["AI エージェント\nWikimedia Commons 検索\n著者名 or 作品名でクエリ"]
     SEARCH --> FOUND{ファイルページ\n発見？}
@@ -368,10 +383,10 @@ flowchart TD
 | UC-06 | 翻訳 JSON 取得済み | `status == pass` を返す | 不合格時は UC-07 へ |
 | UC-07 | translate_retry_count < 2 | 再翻訳で品質合格 | 上限到達時は consecutive_fail_days++ |
 | UC-08 | consecutive_fail_days >= 2 | `current_work_status` を `failed` に設定し停止 | 管理者が UC-14 で手動復旧 |
-| UC-09 | 品質チェック合格 | /tmp_build に必須成果物を全生成 | 失敗時は tmp_build 破棄・最大3回リトライ |
+| UC-09 | **新規実行時**: 品質チェック合格済み / **publish 再開時**: 前回翻訳済みセグメントが存在し `current_stage = publish` | /tmp_build に必須成果物を全生成 | 失敗時は tmp_build 破棄・最大3回リトライ |
 | UC-10 | Publisher 成功 | rss.xml / sitemap.xml 更新完了 | 補助成果物のため失敗時はスキップ可 |
 | UC-11 | `pre_publish_head` 記録済み・本番パスへの仮反映完了 | git push 成功・GitHub Pages 更新 | 失敗時は `pre_publish_head` に復元し翌日リトライ |
 | UC-12 | 各ステージ完了 | state.json アトミック書き込み成功 | 書き込み失敗時はパイプライン停止 |
-| UC-13 | 著者・作品が登録済み | PD/CC0/PDM の画像を保存し YAML sidecar 生成 | 該当画像なしの場合は画像枠を非表示 |
+| UC-13 | `works_master.json` に新規作品・著者が追加済み（日次翻訳パイプラインとは独立した補助ジョブ） | PD/CC0/PDM の画像を保存し YAML sidecar 生成 | 該当画像なしの場合は画像枠を非表示。ジョブ失敗は翻訳公開に影響しない |
 | UC-14 | current_work_status == failed | state.json を修正し active に戻す | 管理者による手動操作 |
 | UC-15 | GitHub Pages にページが公開済み | 読者がブラウザでページを閲覧できる | - |

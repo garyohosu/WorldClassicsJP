@@ -1,9 +1,9 @@
 # usecase.md
 WorldClassicsJP ユースケース設計
 
-バージョン: 1.0.0
+バージョン: 1.1.0
 最終更新日: 2026-03-06
-対応 SPEC: v1.4.0
+対応 SPEC: v1.4.1
 
 ---
 
@@ -27,7 +27,7 @@ WorldClassicsJP ユースケース設計
 | UC番号 | ユースケース名 | 主アクター | 概要 |
 |--------|--------------|-----------|------|
 | UC-01 | 日次パイプライン起動 | cron | 毎日 03:00 に OpenClaw を起動し、パイプラインを開始する |
-| UC-02 | ロック取得・状態復旧 | OpenClaw | 二重起動を防ぎ、前回中断状態から再開する |
+| UC-02 | ロック取得・状態復旧・初期化 | OpenClaw | 二重起動を防ぎ、`state.json` が無ければ初期生成し、前回中断状態から再開する |
 | UC-03 | 原文テキスト取得 | OpenClaw | works_master.json に基づき source_url から原文を取得する |
 | UC-04 | テキスト前処理 | ローカル LLM | 段落分割・クリーニング・メタデータ生成を行い、セグメントを生成する |
 | UC-05 | テキスト翻訳 | Codex CLI | セグメントを日本語に翻訳し、JSON で結果を返す |
@@ -61,7 +61,7 @@ graph TB
 
     subgraph PIPELINE["日次パイプライン"]
         UC01["UC-01\n日次パイプライン起動"]
-        UC02["UC-02\nロック取得・状態復旧"]
+        UC02["UC-02\nロック取得・状態復旧・初期化"]
         UC03["UC-03\n原文テキスト取得"]
         UC04["UC-04\nテキスト前処理"]
         UC05["UC-05\nテキスト翻訳"]
@@ -120,11 +120,24 @@ flowchart TD
 
     LOCK -->|なし| LOCK_ACQ[state.lock 取得\nrun_id / pid 記録]
 
-    LOCK_ACQ --> STATE_READ[state.json 読み込み]
+    LOCK_ACQ --> STATE_EXISTS{state.json\n存在？}
+    STATE_EXISTS -->|NO| INIT_STATE[state.json 初期生成\n最小 work_id /\ncurrent_stage=idle]
+    INIT_STATE --> STATE_READ
+    STATE_EXISTS -->|YES| STATE_READ[state.json 読み込み]
+
     STATE_READ --> STATUS_CHECK{current_work_status}
 
     STATUS_CHECK -->|failed| NOTIFY_FAILED([管理者通知\n処理停止])
-    STATUS_CHECK -->|active / idle| FETCH
+    STATUS_CHECK -->|paused / exhausted| END_DAY
+    STATUS_CHECK -->|complete| LOAD_NEXT[次作品を設定\ncurrent_stage=idle]
+    STATUS_CHECK -->|active| STAGE_CHECK{current_stage}
+
+    LOAD_NEXT --> STAGE_CHECK
+
+    STAGE_CHECK -->|idle / preprocess| FETCH
+    STAGE_CHECK -->|translate| TRANSLATE
+    STAGE_CHECK -->|quality_check| QA
+    STAGE_CHECK -->|publish| PUBLISH
 
     FETCH["🔵 UC-03 Fetcher\nsource_url から原文取得"]
     FETCH --> FETCH_OK{取得成功？}
@@ -143,12 +156,12 @@ flowchart TD
     TRANSLATE --> TRANS_OK{成功 かつ\nJSON 正常？}
 
     TRANS_OK -->|NO| RETRY_COUNT{translate_retry_count\n< 2 ？}
-    RETRY_COUNT -->|YES| INC_RETRY[retry_count++\nheartbeat 更新]
+    RETRY_COUNT -->|YES| INC_RETRY[translate_retry_count++\nheartbeat 更新]
     INC_RETRY --> TRANSLATE
     RETRY_COUNT -->|NO| FAIL_DAY[consecutive_fail_days++\n【翻訳未完】を付記]
 
     FAIL_DAY --> FAIL_CHECK{consecutive_fail_days\n≥ 2 ？}
-    FAIL_CHECK -->|YES| SET_FAILED[status = failed\nstate.json 保存]
+    FAIL_CHECK -->|YES| SET_FAILED[current_work_status = failed\nstate.json 保存]
     SET_FAILED --> END_DAY
     FAIL_CHECK -->|NO| SAVE_RETRY[state.json 保存\nstage = translate]
     SAVE_RETRY --> END_DAY
@@ -159,7 +172,7 @@ flowchart TD
     QA --> QA_PASS{status == pass？}
 
     QA_PASS -->|NO| RETRY_COUNT
-    QA_PASS -->|YES| RESET_RETRY[retry_count=0\nconsecutive_fail_days=0]
+    QA_PASS -->|YES| RESET_RETRY[translate_retry_count=0\nconsecutive_fail_days=0]
 
     RESET_RETRY --> PUBLISH
 
@@ -167,12 +180,13 @@ flowchart TD
     PUBLISH --> PUB_OK{生成成功？}
 
     PUB_OK -->|NO| PUB_RETRY{publish_retry_count\n< 3 ？}
-    PUB_RETRY -->|YES| INC_PUB[pub_retry_count++]
+    PUB_RETRY -->|YES| INC_PUB[publish_retry_count++\nstage=publish]
     INC_PUB --> END_DAY
     PUB_RETRY -->|NO| PUB_FAILED[pub 失敗確定\nログ記録]
     PUB_FAILED --> END_DAY
 
-    PUB_OK -->|YES| COPY[tmp_build → 本番パスへ反映]
+    PUB_OK -->|YES| SAVE_HEAD[pre_publish_head を記録]
+    SAVE_HEAD --> COPY[tmp_build → 本番パスへ仮反映]
     COPY --> RSS_SITEMAP
 
     RSS_SITEMAP["🔵 UC-10 RSS・サイトマップ更新\nrss.xml / sitemap.xml 再生成"]
@@ -180,10 +194,12 @@ flowchart TD
 
     COMMIT["⚫ UC-11 GitHub コミット・プッシュ\ngit add / commit / push"]
     COMMIT --> COMMIT_OK{成功？}
-    COMMIT_OK -->|NO| LOG_COMMIT[エラーログ\n次回リトライ]
+    COMMIT_OK -->|NO| ROLLBACK[作業ツリーとローカル履歴を\npre_publish_head に復元\ntmp_build 破棄\nstate は進めない]
+    ROLLBACK --> LOG_COMMIT[エラーログ\n次回リトライ]
     LOG_COMMIT --> END_DAY
 
-    COMMIT_OK -->|YES| ADV_STATE[current_part 進める\nstage = idle]
+    COMMIT_OK -->|YES| CLEAN_TMP[tmp_build 破棄]
+    CLEAN_TMP --> ADV_STATE[current_part 進める\nstage = idle]
     ADV_STATE --> SEG_LOOP
 
     SEG_LOOP -->|NO\n今日の上限到達| END_DAY
@@ -208,7 +224,9 @@ sequenceDiagram
     OC->>LLLM: セグメントテキスト送信（前処理）
     LLLM-->>OC: 段落分割・クリーニング済みテキスト
 
-    loop translate_retry_count < 3（同一実行内最大2回）
+    Note over OC,STATE: translate_retry_count は再翻訳回数のみを表す<br/>初回試行は含まない
+
+    loop 総試行は最大3回（初回1回 + 再翻訳2回）
         OC->>OC: translate_prompt.md テンプレート展開
         OC->>CODEX: 展開済みプロンプト（stdin）
         CODEX-->>OC: JSON { translated_text, summary, keywords }
@@ -286,7 +304,7 @@ stateDiagram-v2
 
     translate --> quality_check : 翻訳成功\nJSON 取得
 
-    translate --> translate : 同一実行内リトライ\n(retry_count < 2)
+    translate --> translate : 同一実行内リトライ\n(translate_retry_count < 2)
 
     translate --> idle : リトライ上限超過\n翌日再挑戦へ
 
@@ -343,16 +361,16 @@ flowchart TD
 | UC番号 | 前提条件 | 成功条件 | 例外・代替フロー |
 |--------|---------|---------|----------------|
 | UC-01 | cron が設定済み | OpenClaw プロセスが起動する | cron 自体の障害は運用者が対処 |
-| UC-02 | state.json が存在する | ロック取得成功・状態読み込み完了 | stale lock の場合は退避後取得 |
+| UC-02 | `/data/works_master.json` が存在する | ロック取得成功・state.json 読み込みまたは初期生成完了 | stale lock の場合は退避後取得。`state.json` 欠如時は最小 `work_id` で初期化 |
 | UC-03 | works_master.json に未完了作品あり・pd_verified=true | テキストデータを取得しローカルに保存 | 取得失敗時はログ記録し翌日再試行 |
 | UC-04 | 原文テキスト取得済み | daily_max_chars 以内のセグメント列を生成 | 前処理失敗時はログ記録し翌日再試行 |
 | UC-05 | セグメント生成済み | JSON `{ translated_text, summary, keywords }` を正常取得 | 失敗時は同一実行内最大2回リトライ |
 | UC-06 | 翻訳 JSON 取得済み | `status == pass` を返す | 不合格時は UC-07 へ |
 | UC-07 | translate_retry_count < 2 | 再翻訳で品質合格 | 上限到達時は consecutive_fail_days++ |
-| UC-08 | consecutive_fail_days >= 2 | status を `failed` に設定し停止 | 管理者が UC-14 で手動復旧 |
+| UC-08 | consecutive_fail_days >= 2 | `current_work_status` を `failed` に設定し停止 | 管理者が UC-14 で手動復旧 |
 | UC-09 | 品質チェック合格 | /tmp_build に必須成果物を全生成 | 失敗時は tmp_build 破棄・最大3回リトライ |
 | UC-10 | Publisher 成功 | rss.xml / sitemap.xml 更新完了 | 補助成果物のため失敗時はスキップ可 |
-| UC-11 | 本番パスへの反映完了 | git push 成功・GitHub Pages 更新 | 失敗時はログ記録し翌日リトライ |
+| UC-11 | `pre_publish_head` 記録済み・本番パスへの仮反映完了 | git push 成功・GitHub Pages 更新 | 失敗時は `pre_publish_head` に復元し翌日リトライ |
 | UC-12 | 各ステージ完了 | state.json アトミック書き込み成功 | 書き込み失敗時はパイプライン停止 |
 | UC-13 | 著者・作品が登録済み | PD/CC0/PDM の画像を保存し YAML sidecar 生成 | 該当画像なしの場合は画像枠を非表示 |
 | UC-14 | current_work_status == failed | state.json を修正し active に戻す | 管理者による手動操作 |

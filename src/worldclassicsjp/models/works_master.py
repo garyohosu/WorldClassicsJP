@@ -24,6 +24,7 @@ class WorksMaster:
     death_year: int
     pd_verified: bool
     length_class: LengthClass
+    parts_total: int = 0   # 0 = 未確定（連載中）
 
     def __post_init__(self) -> None:
         if not isinstance(self.work_id, int) or self.work_id < 1:

@@ -1,16 +1,16 @@
 # sequence.md
 WorldClassicsJP シーケンス設計
 
-バージョン: 1.0.0
-最終更新日: 2026-03-06
-対応 SPEC: v1.5.0
+バージョン: 1.0.1
+最終更新日: 2026-03-07
+対応 SPEC: v1.5.1
 対応 UseCase: v1.2.0
 
 ---
 
 ## 1. 目的
 
-本書は、[SPEC.md](C:/PROJECT/WorldClassicsJP/SPEC.md) と [usecase.md](C:/PROJECT/WorldClassicsJP/usecase.md) をもとに、主要処理を Mermaid のシーケンス図として具体化したものである。
+本書は、[SPEC.md](./SPEC.md) と [usecase.md](./usecase.md) をもとに、主要処理を Mermaid のシーケンス図として具体化したものである。
 
 - 日次パイプライン正常系
 - ロック復旧・初期化
@@ -62,9 +62,9 @@ sequenceDiagram
 
     OC->>BUILD: index / work / part / author page を生成
     BUILD-->>OC: 必須成果物生成完了
-    OC->>GIT: pre_publish_head を記録
+    OC->>BUILD: rss.xml / sitemap.xml を /tmp_build に生成
+    OC->>GIT: pre_publish_head を state.json に記録
     OC->>GIT: /tmp_build を本番パスへ仮反映
-    OC->>BUILD: rss.xml / sitemap.xml を生成
     OC->>GIT: git add / commit / push
     GIT->>GH: 更新を反映
     GH-->>OC: push accepted
@@ -203,9 +203,9 @@ sequenceDiagram
         Note over OC,STATE: 次回実行で同一 part を再試行
     else build 成功
         BUILD-->>OC: index / work / part / author page 完了
-        OC->>GIT: pre_publish_head を記録
+        OC->>BUILD: rss.xml / sitemap.xml を /tmp_build に生成
+        OC->>GIT: pre_publish_head を state.json に記録
         OC->>GIT: /tmp_build を本番パスへ仮反映
-        OC->>BUILD: rss.xml / sitemap.xml を再生成
         OC->>GIT: git add / commit / push
 
         alt commit/push 成功
@@ -237,8 +237,9 @@ sequenceDiagram
     participant LOG as /logs/YYYY/MM/DD/run_id.json
 
     OC->>STATE: current_work_status = complete を確認
-    OC->>WM: 次の未完了作品を検索
-    Note over OC,WM: 条件: pd_verified = true<br/>status が complete / failed / paused 以外<br/>work_id 昇順
+    OC->>STATE: 次作品候補を判定（current_work_id より大きい work_id を走査）
+    OC->>WM: 候補 work_id のメタデータを取得
+    Note over OC,STATE: 条件: pd_verified = true / work_id 昇順<br/>実行可否判定は state.json（v1）または queue_state.json（複数キュー）
 
     alt 次作品が見つかる
         WM-->>OC: next work_id / slug / source_url
@@ -272,6 +273,7 @@ sequenceDiagram
     participant LOG as /logs/YYYY/MM/DD/run_id.json
 
     OC->>WM: 新規作品 / 著者追加を検出
+    Note over OC,WM: works_master.hash との SHA-256 比較で変更を検出<br/>差異がある場合のみ補助ジョブを実行し、完了後にハッシュを更新
     WM-->>OC: author_name / title / slug
     OC->>WIKI: 著者名または作品名で検索
 
@@ -299,5 +301,6 @@ sequenceDiagram
 ## 8. メモ
 
 - `state.lock`、`/tmp_build`、`pre_publish_head` は論理的な参与者として表現している。
-- `rss.xml` と `sitemap.xml` は補助成果物であり、主要成果物生成後に更新する。
+- `pre_publish_head` は `state.json` の `pre_publish_head` フィールドに 40 桁 SHA として保存する。
+- `rss.xml` と `sitemap.xml` は補助成果物であり、必須 HTML 成果物の `/tmp_build` への生成後・本番パスへの仮反映前に `/tmp_build` 内に生成する。仮反映で HTML 成果物と一緒にコピーされる。
 - 本書作成時点では、シーケンス図化のために追加の Q&A は不要だった。

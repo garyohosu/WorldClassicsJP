@@ -1,5 +1,35 @@
 # Changelog
 
+## 2026-03-07（TDD テストスイート追加: 109 tests all green）
+
+- `pyproject.toml`: パッケージ定義・ビルドシステム（setuptools）・pytest 設定を追加
+- `src/worldclassicsjp/`: パッケージスタブ一式を作成
+  - `models/enums.py`: Stage / WorkStatus / LengthClass / SourceType / RightsLabel 列挙型
+  - `models/works_master.py`: WorksMaster データクラス（バリデーション付き）
+  - `models/state.py`: State データクラス（アトミック保存、列挙型変換、後方互換補完）
+  - `models/state_lock.py`: StateLock（acquire / release / heartbeat / stale 判定）
+  - `models/config.py`: Config（YAML 読み込み、必須フィールド・値域バリデーション）
+  - `models/run_log.py`: RunLog（エントリ追記・JSON 保存・親ディレクトリ自動作成）
+  - `models/image_meta.py`: ImageMeta データクラス
+  - `preprocessor.py`: Preprocessor（clean_text / split_segments / generate_metadata）
+  - `translator.py`: Translator（Codex CLI DI / TranslationResult）
+  - `quality_checker.py`: QualityChecker（LLM DI / QAResult バリデーション）
+  - `publisher.py`: Publisher（git DI / reflect_to_production / rollback / cleanup）
+  - `image_job.py`: ImageJob（SHA-256 差分検出 / update_hash）
+  - `pipeline.py`: Pipeline（翻訳リトライ / 連続失敗日数 / 公開リトライ / 次作品移行）
+- `tests/`: TDD テストスイートを作成（109 テスト、全グリーン）
+  - `test_models/test_works_master.py` (11 tests)
+  - `test_models/test_state.py` (9 tests)
+  - `test_models/test_state_lock.py` (9 tests)
+  - `test_models/test_config.py` (8 tests)
+  - `test_models/test_run_log.py` (4 tests)
+  - `test_preprocessor.py` (14 tests)
+  - `test_translator.py` (7 tests)
+  - `test_quality_checker.py` (9 tests)
+  - `test_publisher.py` (11 tests)
+  - `test_image_job.py` (5 tests)
+  - `test_pipeline.py` (22 tests)
+
 ## 2026-03-07（レビュー修正: SPEC v1.5.1）
 
 - `SPEC.md`: バージョンを v1.5.1 に更新、最終更新日を修正

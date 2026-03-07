@@ -49,12 +49,13 @@ class Pipeline:
                 if qa.status == "pass":
                     self.state.translate_retry_count = 0
                     self.state.consecutive_fail_days  = 0
+                    self.state.current_stage = Stage.PUBLISH
                     return result
                 else:
-                    self.state.translate_retry_count = attempt + 1
+                    self.state.translate_retry_count = min(attempt + 1, State.MAX_TRANSLATE_RETRIES)
 
             except Exception:
-                self.state.translate_retry_count = attempt + 1
+                self.state.translate_retry_count = min(attempt + 1, State.MAX_TRANSLATE_RETRIES)
 
         return None  # 全試行失敗
 

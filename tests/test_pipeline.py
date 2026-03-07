@@ -106,6 +106,12 @@ class TestExecuteTranslateWithRetry:
         pipeline.execute_translate_with_retry(make_segment())
         assert state.consecutive_fail_days == 0
 
+    def test_成功後にステージがPUBLISHに進む(self):
+        state = make_state()
+        pipeline = make_pipeline(state)
+        pipeline.execute_translate_with_retry(make_segment())
+        assert state.current_stage == Stage.PUBLISH
+
     def test_QCがfailし続けるとNoneを返す(self):
         state = make_state()
         pipeline = make_pipeline(state, qc=FakeQCFail())
@@ -122,7 +128,7 @@ class TestExecuteTranslateWithRetry:
         state = make_state()
         pipeline = make_pipeline(state, qc=FakeQCFail())
         pipeline.execute_translate_with_retry(make_segment())
-        assert state.translate_retry_count == State.MAX_TRANSLATE_RETRIES + 1
+        assert state.translate_retry_count == State.MAX_TRANSLATE_RETRIES
 
 
 # -- handle_daily_translate_failure --

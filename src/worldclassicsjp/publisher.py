@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import shutil
 import subprocess
 import xml.etree.ElementTree as ET
@@ -185,17 +186,43 @@ class Publisher:
         </div>
         """
 
-        # 本文の整形（改行を <p> タグに）
-        paragraphs = escape(result.translated_text).split("\n\n")
+        # 本文の整形（長すぎる段落を文単位で分割して可読性を上げる）
+        raw_paragraphs = [p.strip() for p in result.translated_text.split("\n\n") if p.strip()]
+
+        def _split_long_paragraph(p: str) -> list[str]:
+            if len(p) <= 320:
+                return [p]
+            chunks = []
+            buf = ""
+            sentences = re.split(r"(?<=[。！？!?])", p)
+            for s in sentences:
+                if not s:
+                    continue
+                cand = (buf + s).strip()
+                if buf and len(cand) > 260:
+                    chunks.append(buf.strip())
+                    buf = s
+                else:
+                    buf = cand
+            if buf.strip():
+                chunks.append(buf.strip())
+            return chunks if chunks else [p]
+
+        paragraphs = []
+        for p in raw_paragraphs:
+            paragraphs.extend(_split_long_paragraph(p))
+
         # 途中に広告を挟む
         content_parts = []
         for i, p in enumerate(paragraphs):
-            if p.strip():
-                p_html = p.replace("\n", "<br>")
-                content_parts.append(f'<p class="mb-6">{p_html}</p>')
+            p_html = escape(p).replace("\n", "<br>")
+            cls = "mb-7 leading-9 text-[1.05rem] text-ink"
+            if i == 0:
+                cls += " text-[1.1rem]"
+            content_parts.append(f'<p class="{cls}">{p_html}</p>')
             if i == len(paragraphs) // 2:
                 content_parts.append('<div class="my-10 text-center"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6743751614716161" data-ad-slot="middle" data-ad-format="auto" data-full-width-responsive="true"></ins></div>')
-        
+
         content_html = "\n".join(content_parts)
 
         body = f"""
@@ -212,8 +239,10 @@ class Publisher:
 
             {nav_html}
 
-            <div class="leading-9 text-[1.1rem] text-ink font-serif tracking-wide">
-                {content_html}
+            <div class="glass rounded-2xl p-6 sm:p-8 md:p-10 border border-line/80">
+                <div class="mx-auto max-w-2xl font-serif tracking-wide">
+                    {content_html}
+                </div>
             </div>
 
             <div class="mt-16 p-6 rounded-2xl border-l-4 border-amber bg-amber/5 text-sm text-slate italic">

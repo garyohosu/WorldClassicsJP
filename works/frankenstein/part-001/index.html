@@ -1,12 +1,190 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <title>フランケンシュタイン Part 001</title>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>フランケンシュタイン 第1部 | WorldClassicsJP</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    ink: '#14110f',
+                    mist: '#f5f0e6',
+                    paper: '#fffdf8',
+                    line: '#dfd4bf',
+                    pine: '#0d6157',
+                    amber: '#c06d1b',
+                    slate: '#6f6555'
+                },
+                boxShadow: {
+                    pane: '0 18px 40px rgba(35, 23, 10, 0.12)'
+                }
+            }
+        }
+    }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/bundled/lenis.min.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6743751614716161" crossorigin="anonymous"></script>
+
+    <style>
+    body {
+        font-family: 'Zen Kaku Gothic New', sans-serif;
+        background: #f3ecdd;
+        color: #14110f;
+    }
+    .jp-title { font-family: 'Shippori Mincho B1', serif; }
+    .glass {
+        background: linear-gradient(145deg, rgba(255,253,247,.9), rgba(255,249,236,.78));
+        border: 1px solid rgba(223,212,191,.9);
+        backdrop-filter: blur(8px);
+    }
+    .neon-line {
+        background: linear-gradient(90deg, transparent, rgba(13,97,87,.7), rgba(192,109,27,.6), transparent);
+        height: 1px;
+    }
+    </style>
 </head>
-<body>
-<h1>フランケンシュタイン</h1><p><a href="https://garyohosu.github.io/WorldClassicsJP/authors/mary-shelley/">メアリー・シェリー</a></p><p><a href="https://garyohosu.github.io/WorldClassicsJP/works/frankenstein/">目次</a></p><nav></nav><article>[&#x27;メアリー・シェリー『フランケンシュタイン――あるいは現代のプロメテウス』&#x27;, &#x27;&#x27;, &#x27;このProject Gutenberg電子書籍は、米国内および世界の多くの地域で、誰でも無料かつほとんど制限なく利用できます。本書に添付されたProject Gutenbergライセンス、または www.gutenberg.org に掲載された同ライセンスの条件に従う限り、複製、配布、再利用が可能です。米国外にお住まいの場合は、本書を利用する前に、居住国の法令をご確認ください。&#x27;, &#x27;&#x27;, &#x27;書名：『フランケンシュタイン――あるいは現代のプロメテウス』&#x27;, &#x27;著者：メアリー・ウルストンクラフト・シェリー&#x27;, &#x27;&#x27;, &#x27;公開日：1993年10月1日（電子書籍 #84）&#x27;, &#x27;最終更新：2026年2月10日&#x27;, &#x27;言語：英語&#x27;, &#x27;その他の情報・形式：www.gutenberg.org/ebooks/84&#x27;, &#x27;クレジット：Judith Boss, Christy Phillips, Lynn Hanninen, David Meltzer。HTML版：Al Haines。追加修正：Menno de Leeuw。&#x27;, &#x27;&#x27;, &#x27;『フランケンシュタイン；あるいは現代のプロメテウス』&#x27;, &#x27;メアリー・ウルストンクラフト（ゴドウィン）シェリー著&#x27;, &#x27;&#x27;, &#x27;目次&#x27;, &#x27;第一の手紙&#x27;, &#x27;第二の手紙&#x27;, &#x27;第三の手紙&#x27;, &#x27;第四の手紙&#x27;, &#x27;第一章&#x27;, &#x27;第二章&#x27;, &#x27;第三章&#x27;, &#x27;第四章&#x27;, &#x27;第五章&#x27;, &#x27;第六章&#x27;, &#x27;第七章&#x27;, &#x27;第八章&#x27;, &#x27;第九章&#x27;, &#x27;第十章&#x27;, &#x27;第十一章&#x27;, &#x27;第十二章&#x27;, &#x27;第十三章&#x27;, &#x27;第十四章&#x27;, &#x27;第十五章&#x27;, &#x27;第十六章&#x27;, &#x27;第十七章&#x27;, &#x27;第十八章&#x27;, &#x27;第十九章&#x27;, &#x27;第二十章&#x27;, &#x27;第二十一章&#x27;, &#x27;第二十二章&#x27;, &#x27;第二十三章&#x27;, &#x27;第二十四章&#x27;, &#x27;&#x27;, &#x27;第一の手紙&#x27;, &#x27;（イングランド、サヴィル夫人へ）&#x27;, &#x27;&#x27;, &#x27;サンクト・ペテルブルク\u300012月11日\u300017—年&#x27;, &#x27;&#x27;, &#x27;あなたがあれほど不吉な予感を抱いていた事業の出発に、何の災厄も伴わなかったとお伝えできれば、きっとお喜びになるでしょう。私は昨日ここへ到着しました。そして最初にすべきことは、親愛なる姉上に私の無事と、企ての成功への確信が日ごとに増していることをお知らせすることです。&#x27;, &#x27;&#x27;, &#x27;私はすでにロンドンよりはるか北にいます。ペテルブルクの街を歩くと、北から吹きつける冷たい風が頬をなで、神経を引き締め、胸を喜びで満たします。この感覚がわかりますか。私の向かう地方から渡ってきたこの風は、氷雪の気候を前もって味わわせてくれるのです。この希望の風に鼓舞され、私の白昼夢はいっそう熱を帯び、鮮烈になります。北極は霜と荒廃の座だと思い込もうとしても、私の想像にはつねに美と歓びの地として立ち現れるのです。そこでは、マーガレット、太陽は絶えず地平をかすめながら広い円盤を見せ、永遠の輝きを放っている。そこでは――先人の航海者たちを少し信じることを許しておくれ、姉上――雪も霜も退けられ、静かな海を進む私たちは、これまで人の住む地球上で見いだされたどの土地にも勝る驚異と美の国へ運ばれてゆくかもしれません。その産物も景観も前例のないものかもしれない。未発見の孤絶の地における天体の現象が、疑いなくそうであるように。永遠の光の国で、何が期待できぬというのでしょう。私はそこで羅針針を引く不思議な力を見いだし、これまで見かけ上の偏差が説明できなかった幾千の天文観測を、この航海ひとつで永遠に整合させられるかもしれません。誰も訪れたことのない世界の一角を見て、いまだ人の足跡の刻まれぬ地を踏む――この誘惑こそ、危険や死への恐れを打ち破るに十分であり、私にこの労苦の航海を始めさせるのです。それは、休日の仲間と小舟で故郷の川を探検にのぼる子どもの歓びにも似ています。たとえこれらの推測がすべて誤りであっても、北極近くに航路を開いて、今は到達に何か月も要する諸国へ道をつけること、あるいは磁気の秘密を確かめることができれば――もしそれが可能なら私のような企てでしか成し得ないのですが――私は後世に至るまで全人類に計り知れない恩恵を与えることになる、この点はあなたにも否定できないでしょう。&#x27;, &#x27;&#x27;, &#x27;こうした思いは、手紙を書き始めたときの動揺を追い払い、私の心は天へと持ち上げられるような熱情に燃えています。精神を鎮めるものは、魂が知性の目を据える一点、すなわち揺るぎない目的ほど大きくはないのです。この遠征は幼いころからの最愛の夢でした。私は、極を囲む海を通って北太平洋へ達しようとしたさまざまな航海記を、渇くように読みました。発見航海の歴史で叔父トマスの蔵書が埋め尽くされていたことを、あなたも覚えているでしょう。私の教育はなおざりでしたが、読書への情熱だけは誰にも劣らなかった。私は昼も夜もそれらを読みふけり、父の遺言で海に出ることを叔父に禁じられたと知った幼時の悔恨を、ますます深めたのです。&#x27;, &#x27;&#x27;, &#x27;この幻は、初めて詩人たちを読んだときにいったん色あせました。彼らの詩情は私の魂を恍惚とさせ、天上へ引き上げたのです。私もまた詩人となり、一年のあいだ自分で築いた楽園に住みました。ホメロスやシェイクスピアの名が祀られる神殿に、私も一つの場所を得られるかもしれないと夢見たのです。だが私は失敗し、その失望をどれほど重く背負ったか、あなたはよくご存じです。ちょうどそのころ従兄の遺産を相続し、私の思考はふたたび、かつての流れへ戻っていきました。&#x27;, &#x27;&#x27;, &#x27;現在の企てを決意してから六年が過ぎました。今でも、この大事業に身を捧げると決めたその時刻をありありと思い出せます。私はまず肉体を苦難に慣らすことから始めました。北海への数度の捕鯨航海に同行し、寒さ、飢え、渇き、不眠を自ら引き受け、日中はしばしば普通の船員以上に働き、夜は数学、医学理論、そして海の冒険者に実際的利益を与える物理科学の諸分野の勉強に捧げました。実際、私は二度グリーンランド捕鯨船の下級士官として雇われ、見事に職責を果たしました。船長が私の働きを高く評価し、船内第二位の地位を与えようとして、どうか残ってくれと熱心に懇願したとき、私は少し誇らしく感じたものです。&#x27;, &#x27;&#x27;, &#x27;さて、愛するマーガレット、これで私は何か偉大な目的を成し遂げるに値しないでしょうか。私の人生は安逸と贅沢のうちにも送れたはずですが、私は富の与えるあらゆる誘惑より栄光を選びました。ああ、そうだと励ましてくれる声がどこかにあれば。私の勇気と決意は固い。だが希望は揺れ、気力はしばしば沈みます。これから私は、あらゆる不測に対して忍耐の限りを求められる長く困難な航海へ出ます。私は他人を鼓舞するだけでなく、彼らの気力が萎えるときには、時に自分自身をも支えなければなりません。&#x27;, &#x27;&#x27;, &#x27;いまはロシア旅行には最適の季節です。人々は橇で雪上を素早く駆け、乗り心地は快い。私の考えでは、イングランドの駅馬車よりずっと気持ちがよい。毛皮をまとっていれば寒さは過酷ではありません。私はすでにその装いを採っています。甲板を歩き回るのと、何時間もじっと座っているのとでは大違いで、運動がなければ血液は文字どおり静脈の中で凍りかねないのです。サンクト・ペテルブルクからアルハンゲリスクへ向かう街道で命を落とす野心など、私にはありません。&#x27;, &#x27;&#x27;, &#x27;私は二週間ないし三週間で後者の町へ出発します。そこで船を一隻借りるつもりです。船主の保険料を払えば容易に手配できますし、捕鯨に慣れた者の中から必要と思うだけの船員を雇うつもりです。出帆は六月までしない予定です。では、いつ帰るのか。ああ、愛する姉上、この問いにどう答えればよいでしょう。成功すれば、あなたと再会できるまでに、幾月も、あるいは幾年も過ぎるでしょう。失敗すれば、まもなく会えるか、さもなくば二度と会えないかです。&#x27;, &#x27;&#x27;, &#x27;さようなら、私の愛する、すぐれたマーガレット。天があなたに祝福を降りそそぎ、私を守ってくださいますように。そうすれば私は、あなたの愛とやさしさのすべてに対する感謝を、幾たびでも証しできるのです。&#x27;, &#x27;&#x27;, &#x27;あなたを愛する弟&#x27;, &#x27;R・ウォルトン&#x27;, &#x27;&#x27;, &#x27;第二の手紙&#x27;, &#x27;（イングランド、サヴィル夫人へ）&#x27;, &#x27;&#x27;, &#x27;アルハンゲリスク\u30003月28日\u300017—年&#x27;, &#x27;&#x27;, &#x27;霜と雪に取り囲まれたこの地では、時の流れがなんと遅いことでしょう！ それでも私の事業は第二の一歩を踏み出しました。私は船を借り、いまは船員集めに追われています。すでに雇った者たちは頼りになりそうで、たしかに怖れを知らぬ勇気を備えています。&#x27;, &#x27;&#x27;, &#x27;しかし、私にはまだ満たされたことのない欠乏が一つあります。そして今、その対象を欠くことを、私はきわめて苛烈な不幸として感じています。私には友がいないのです、マーガレット。私の心が熱く燃えるとき……&#x27;]</article><section>ウォルトンが姉マーガレットへ送った第一・第二の手紙（冒頭部）。北極探検への強い使命感、栄光への憧れ、長年の準備と自己鍛錬、そして成功と死の可能性を抱えた不安が語られる。第二の手紙では船と船員の確保が進む一方、最大の欠乏として「心を分かち合う友の不在」が明かされる。</section>
-<script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+<body class="bg-[#f8f2e8] min-h-screen overflow-x-hidden">
+    <header class="sticky top-0 z-40 border-b border-line/70 bg-paper/80 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+            <a href="https://garyohosu.github.io/WorldClassicsJP/" class="block">
+                <p class="text-xs tracking-[0.18em] text-slate uppercase">WorldClassicsJP</p>
+                <h1 class="jp-title text-xl">世界文学の至宝</h1>
+            </a>
+            <nav class="hidden md:flex items-center gap-4 text-sm font-medium">
+                <a href="https://garyohosu.github.io/WorldClassicsJP/" class="hover:text-pine transition-colors">ホーム</a>
+                <a href="https://garyohosu.github.io/WorldClassicsJP/authors/" class="hover:text-pine transition-colors">作者一覧</a>
+                <a href="https://garyohosu.github.io/WorldClassicsJP/about/" class="hover:text-pine transition-colors">このサイトについて</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 py-10 reveal">
+            <header class="mb-12 text-center">
+                <p class="text-xs tracking-[0.2em] text-slate mb-2 uppercase">メアリー・シェリー</p>
+                <h1 class="jp-title text-2xl sm:text-4xl mb-4">フランケンシュタイン</h1>
+                <p class="text-pine tracking-widest font-semibold">第 1 部</p>
+            </header>
+
+            <div class="mb-8 text-center">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6743751614716161" data-ad-slot="top" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            </div>
+
+            
+        <div class="flex items-center justify-between gap-4 py-4 border-b border-line mb-8 sticky top-0 bg-paper/80 backdrop-blur-md z-30">
+            <div class="flex items-center gap-2">
+                <a href="https://garyohosu.github.io/WorldClassicsJP/works/frankenstein/" class="px-3 py-1 rounded-full border border-line text-sm hover:border-pine">目次</a>
+            </div>
+            <div class="flex items-center gap-2 text-sm">
+                
+                <span class="text-slate">1 / ??</span>
+                <a href="#" class="px-3 py-1 rounded-full border border-line hover:border-pine opacity-30 cursor-not-allowed">次へ</a>
+            </div>
+        </div>
+        
+
+            <div class="glass rounded-2xl p-6 sm:p-8 md:p-10 border border-line/80">
+                <div class="mx-auto max-w-2xl font-serif tracking-wide">
+                    <p class="mb-7 leading-9 text-[1.05rem] text-ink text-[1.1rem]">『フランケンシュタイン、あるいは現代のプロメテウス』<br>メアリー・シェリー</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">プロジェクト・グーテンベルク電子書籍『フランケンシュタイン、あるいは現代のプロメテウス』</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">この電子書籍は、米国内および世界の多くの地域で、ほぼ一切の制限なく無償で利用できます。本文は、この電子書籍に付属するプロジェクト・グーテンベルク・ライセンス、または www.gutenberg.org に掲載された同ライセンスの条件に従う限り、複製・譲渡・再利用が可能です。米国外にお住まいの場合は、利用前に居住国の法令をご確認ください。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">書名：Frankenstein; or, the modern prometheus<br>著者：Mary Wollstonecraft Shelley</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">公開日：1993年10月1日（eBook #84）<br>最新更新：2026年2月10日<br>言語：英語<br>他の情報・形式：www.gutenberg.org/ebooks/84<br>クレジット：Judith Boss, Christy Phillips, Lynn Hanninen, David Meltzer。HTML版：Al Haines。追加修正：Menno de Leeuw。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">『フランケンシュタイン』<br>または『現代のプロメテウス』<br>メアリー・ウルストンクラフト（ゴドウィン）・シェリー</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">目次<br>書簡1<br>書簡2<br>書簡3<br>書簡4<br>第1章<br>第2章<br>第3章<br>第4章<br>第5章<br>第6章<br>第7章<br>第8章<br>第9章<br>第10章<br>第11章<br>第12章<br>第13章<br>第14章<br>第15章<br>第16章<br>第17章<br>第18章<br>第19章<br>第20章<br>第21章<br>第22章<br>第23章<br>第24章</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">書簡1</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">イングランド在住 サヴィル夫人へ</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">サンクト・ペテルブルク<br>17—年12月11日</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">あなたが不吉な予感を抱いていたこの企ての出だしに、何の災難も伴わなかったと知れば、きっとお喜びでしょう。私は昨日ここに到着し、まず最初に、愛する姉上へ私の無事と、事業の成功に対する自信が日ごとに増していることをお伝えします。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">私はすでにロンドンよりはるか北にいます。ペテルブルクの街路を歩くと、北方の冷たい風が頬をかすめ、神経を引き締め、心を歓喜で満たします。この感覚がわかりますか。私が向かおうとしている地方から吹いてくるこの風は、あの氷雪の気候を前もって味わわせてくれるのです。この希望の風に鼓舞されて、私の白昼夢はいっそう熱く、鮮明になります。北極は霜と荒廃の座だと言い聞かせようとしても無駄で、私の想像には常に、美と喜びの国として現れるのです。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">そこでは、マーガレット、太陽はいつも見えていて、その大きな円盤は地平線をかすめながら永遠の輝きを注いでいます。そこでは――姉上、お許しください、先人の航海者たちを少し信じるなら――雪も霜も追われ、穏やかな海を進めば、これまで人の住む地球上で発見されたいかなる地域をも驚異と美で凌ぐ土地へ運ばれてゆくでしょう。そこに生ずるものも地勢も、例のないものかもしれません。未発見の孤寂の地における天体現象が疑いなくそうであるように。永遠の光の国で、何を期待できないというのでしょう。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">私はそこで、方位磁針を引きつける不思議な力を発見し、またこの航海さえあれば見かけ上の偏差を永久に整合させられる数多くの天文観測を、正しく規定できるかもしれません。私は、未踏の世界をこの目で見たいという燃える好奇心を満たし、いまだ人の足跡の刻まれたことのない土地を踏むかもしれない。これこそ私を誘うものです。そしてそれは、危険や死への恐れをすべて打ち負かし、故郷の川を探検しようと休日の仲間と小舟に乗り込む子どものような歓びで、この辛苦の航海を始めるに十分です。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">たとえこれらの推測がすべて誤りだとしても、極地近くの航路を発見し、現在は到達に何か月も要する国々へ道を開くこと、あるいは磁力の秘密を解明することによって、私が人類の末代にまで計り知れない利益をもたらすという点は、あなたにも否定できないはずです。そしてそれが可能だとすれば、私のような企てによってのみ成し遂げられるのです。</p>
+<div class="my-10 text-center"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6743751614716161" data-ad-slot="middle" data-ad-format="auto" data-full-width-responsive="true"></ins></div>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">こうした思索によって、手紙を書き始めたときの動揺は消え、私の心は天にも昇るような熱情で燃えています。精神を静めるのに、揺るがぬ目的――魂が知の眼を据える一点――ほど役立つものはありません。この遠征は幼いころからの私の最愛の夢でした。極地を取り巻く海を通って北太平洋へ到達しようとした、さまざまな航海の記録を私は夢中で読みました。探検航海史で埋め尽くされた、トマス伯父さまの蔵書をあなたも覚えているでしょう。私の教育はなおざりでしたが、読書への情熱だけは人一倍でした。私は昼も夜もそれらの書物を読み込み、読み親しむほどに、父が臨終の言葉で伯父に命じ、私を海の生活に就かせぬよう禁じたと知った子ども時代のあの悔しさが、いっそう深くなったのです。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">これらの幻想は、初めて詩人たちを読んだときに薄れていきました。彼らの詩想は私の魂を魅了し、天へと引き上げたのです。私もまた詩人となり、一年のあいだ自分の創った楽園に住みました。ホメロスやシェイクスピアの名が奉じられる神殿に、私にも一隅が与えられるかもしれないと空想したのです。私の失敗と、その失望をどれほど重く背負ったかは、あなたもよくご存じでしょう。しかしちょうどその頃、私は従兄から遺産を相続し、思考はふたたび以前の傾きへ戻っていきました。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">今の計画を決意してから六年が過ぎました。あの大事業に身を捧げた瞬間を、私は今でもありありと覚えています。まず私は身体を苦難に慣らすことから始めました。北海への捕鯨航海に幾度も同行し、寒さ、飢え、渇き、睡眠不足を自ら進んで耐えました。昼はしばしば普通の船員以上に働き、夜は数学、医学理論、そして海の冒険者に最も実際的な利益をもたらす自然科学の諸分野の勉強にあてました。私は実際に二度、グリーンランド捕鯨船の次席士官補として雇われ、期待以上の働きをしました。船長が私に船内第二位の地位を提示し、ぜひ残ってくれと熱心に懇願したとき、私の働きをそれほど高く評価してくれたのだと思い、少なからず誇らしく感じたのは事実です。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">さて、愛するマーガレット、私は何か大きな目的を成し遂げるに値しないでしょうか。私の人生は安逸と贅沢のうちに過ごせたはずです。だが私は、富が道に並べるあらゆる誘惑よりも栄光を選びました。ああ、だれか励ましの声で「然り」と答えてくれたなら。私の勇気と決意は揺るぎません。けれど希望は揺れ動き、心はしばしば沈みます。私は長く困難な航海に赴こうとしており、そこで起こる不測の事態にはあらゆる不屈の力が要るのです。私は他人を鼓舞するだけでなく、彼らの気力が尽きるときには、自分自身の気力を支えねばなりません。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">ロシアを旅するには今が最もよい時期です。人々は橇で雪上を速く滑ってゆき、その動きは快く、私にはイギリスの駅馬車よりはるかに心地よく思えます。毛皮にくるまっていれば寒さは過酷ではありません。私はすでにその装いを採っています。甲板を歩き回るのと、運動もなく何時間もじっと座っているのとでは大違いで、後者では血が本当に凍りかねないからです。私はサンクト・ペテルブルクからアルハンゲリスクへ向かう街道で命を落とすつもりはありません。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">二週間か三週間のうちに私は後者の町へ発ちます。そこで船主に保険料を払って船を一隻借りるつもりです。それは容易にできるでしょう。また捕鯨に慣れた者たちの中から、必要と思うだけの船員を雇い入れるつもりです。六月になるまでは出帆しません。では、いつ戻れるのか。ああ、愛する姉上、その問いにどう答えられましょう。成功すれば、あなたと再会するまでに、幾月も、いや幾年も過ぎるかもしれません。失敗すれば、すぐにまた会えるでしょう――あるいは、二度と会えないかもしれません。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">さようなら、愛する、すぐれたマーガレット。天の祝福があなたに降り注ぎますように。そして私をも守ってください。あなたの愛と親切のすべてに対する感謝を、何度でもこの身で証しできるように。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">あなたを愛する弟<br>R・ウォルトン</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">書簡2</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">イングランド在住 サヴィル夫人へ</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">アルハンゲリスク<br>17—年3月28日</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">霜と雪に囲まれたここでは、時の過ぎるのがなんと遅いことでしょう。それでも、私の企ては第二歩を踏み出しました。私は船を雇い、今は船員集めに追われています。すでに雇った者たちは頼りになる男たちに見え、確かに恐れを知らぬ勇気を備えています。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">しかし、私にはいまだ満たされたことのない欠乏がひとつあります。そして今、それを欠くことをこの上ない苦痛として感じています。私には友がいないのです、マーガレット。私の胸が熱に燃えるとき……</p>
+                </div>
+            </div>
+
+            <div class="mt-16 p-6 rounded-2xl border-l-4 border-amber bg-amber/5 text-sm text-slate italic">
+                <p>翻訳注記: この翻訳は AI によって自動生成されたものであり、不自然な表現や誤りが含まれている可能性があります。原典の格調高い雰囲気を再現するよう努めていますが、正確な内容は原語版をご参照ください。</p>
+            </div>
+
+            <div class="mt-12 flex justify-center gap-4">
+                <a href="https://garyohosu.github.io/WorldClassicsJP/authors/mary-shelley/" class="px-6 py-2 rounded-full border border-line hover:border-pine hover:text-pine transition-all">作者ページへ</a>
+                <a href="https://garyohosu.github.io/WorldClassicsJP/works/frankenstein/" class="px-6 py-2 rounded-full border border-line hover:border-pine hover:text-pine transition-all">作品目次へ</a>
+            </div>
+
+            <div class="mt-12 text-center">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6743751614716161" data-ad-slot="bottom" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            </div>
+        </article>
+        
+    </main>
+
+    <footer class="py-12 border-t border-line/50 mt-12 bg-paper/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-center md:text-left">
+                <p class="jp-title text-lg mb-2">WorldClassicsJP</p>
+                <p class="text-xs text-slate">パブリックドメイン文学を AI で日本語に。</p>
+            </div>
+            <div class="flex gap-6 text-sm text-slate">
+                <a href="https://garyohosu.github.io/WorldClassicsJP/" class="hover:text-pine">ホーム</a>
+                <a href="https://garyohosu.github.io/WorldClassicsJP/authors/" class="hover:text-pine">作者一覧</a>
+                <a href="https://garyohosu.github.io/WorldClassicsJP/about/" class="hover:text-pine">このサイトについて</a>
+            </div>
+            <p class="text-[10px] text-slate/50">© 2026 WorldClassicsJP Project. Works are in public domain.</p>
+        </div>
+    </footer>
+
+    <script>
+    gsap.registerPlugin(ScrollTrigger);
+    const lenis = new Lenis({
+        duration: 1.2,
+        smoothWheel: true
+    });
+    function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    gsap.utils.toArray('.reveal').forEach((el) => {
+        gsap.from(el, {
+            y: 30,
+            opacity: 0,
+            duration: 0.8,
+            ease: 'power2.out',
+            scrollTrigger: {
+                trigger: el,
+                start: 'top 85%'
+            }
+        });
+    });
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
 </body>
 </html>

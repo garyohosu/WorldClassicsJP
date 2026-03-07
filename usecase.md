@@ -196,7 +196,12 @@ flowchart TD
     COPY --> RSS_SITEMAP
 
     RSS_SITEMAP["🔵 UC-10 RSS・サイトマップ更新\nrss.xml / sitemap.xml 再生成"]
-    RSS_SITEMAP --> COMMIT
+    RSS_SITEMAP --> RSS_OK{更新結果}
+    RSS_OK -->|成功| COMMIT
+    RSS_OK -->|補助成果物のみ失敗| LOG_RSS[警告ログ記録\ncommit 継続]
+    LOG_RSS --> COMMIT
+    RSS_OK -->|致命的エラー| RSS_FATAL[publish failure として扱う\nstage=publish / リトライ]
+    RSS_FATAL --> END_DAY
 
     COMMIT["⚫ UC-11 GitHub コミット・プッシュ\ngit add / commit / push"]
     COMMIT --> COMMIT_OK{成功？}
@@ -377,14 +382,14 @@ flowchart TD
 |--------|---------|---------|----------------|
 | UC-01 | cron が設定済み | OpenClaw プロセスが起動する | cron 自体の障害は運用者が対処 |
 | UC-02 | `/data/works_master.json` が存在する | ロック取得成功・state.json 読み込みまたは初期生成完了 | stale lock の場合は退避後取得。`state.json` 欠如時は最小 `work_id` で初期化 |
-| UC-03 | works_master.json に未完了作品あり・pd_verified=true | テキストデータを取得しローカルに保存 | 取得失敗時はログ記録し翌日再試行 |
+| UC-03 | state.json で current_work_status=active かつ works_master.json に current_work_id が存在し pd_verified=true | テキストデータを取得しローカルに保存 | 取得失敗時はログ記録し翌日再試行 |
 | UC-04 | 原文テキスト取得済み | daily_max_chars 以内のセグメント列を生成 | 前処理失敗時はログ記録し翌日再試行 |
 | UC-05 | セグメント生成済み | JSON `{ translated_text, summary, keywords }` を正常取得 | 失敗時は同一実行内最大2回リトライ |
 | UC-06 | 翻訳 JSON 取得済み | `status == pass` を返す | 不合格時は UC-07 へ |
 | UC-07 | translate_retry_count < 2 | 再翻訳で品質合格 | 上限到達時は consecutive_fail_days++ |
 | UC-08 | consecutive_fail_days >= 2 | `current_work_status` を `failed` に設定し停止 | 管理者が UC-14 で手動復旧 |
 | UC-09 | **新規実行時**: 品質チェック合格済み / **publish 再開時**: 前回翻訳済みセグメントが存在し `current_stage = publish` | /tmp_build に必須成果物を全生成 | 失敗時は tmp_build 破棄・最大3回リトライ |
-| UC-10 | Publisher 成功 | rss.xml / sitemap.xml 更新完了 | 補助成果物のため失敗時はスキップ可 |
+| UC-10 | Publisher 成功 | rss.xml / sitemap.xml 更新完了 | 補助成果物のみ失敗ならログ記録して継続。致命的エラー時は publish failure としてリトライ |
 | UC-11 | `pre_publish_head` 記録済み・本番パスへの仮反映完了 | git push 成功・GitHub Pages 更新 | 失敗時は `pre_publish_head` に復元し翌日リトライ |
 | UC-12 | 各ステージ完了 | state.json アトミック書き込み成功 | 書き込み失敗時はパイプライン停止 |
 | UC-13 | `works_master.json` に新規作品・著者が追加済み（日次翻訳パイプラインとは独立した補助ジョブ） | PD/CC0/PDM の画像を保存し YAML sidecar 生成 | 該当画像なしの場合は画像枠を非表示。ジョブ失敗は翻訳公開に影響しない |

@@ -11,7 +11,7 @@ WorldClassicsJP 実装Q&Aシート
 
 | QA番号 | 状態 | 優先度 | 質問 | コメント | 回答 |
 |--------|------|--------|------|----------|------|
-| Q1-1 | Closed | 高 | 作品一覧データはどのファイルに保持し、1作品あたりの必須フィールドは何か | 作品マスタ設計 | `/data/works_master.json` を使用。自動生成。必須: work_id, title, title_ja, author_name, author_name_ja, author_slug, source_url, source_type, death_year, pd_verified, length_class |
+| Q1-1 | Closed | 高 | 作品一覧データはどのファイルに保持し、1作品あたりの必須フィールドは何か | 作品マスタ設計 | `/data/works_master.json` を使用。自動生成。必須: work_id, work_slug, title, title_ja, author_name, author_name_ja, author_slug, source_url, source_type, death_year, pd_verified, length_class |
 | Q1-2 | Closed | 高 | `work_id` は整数連番・slug・UUID のどれを正とするか | ID設計 | 整数連番を採用。URL生成は `work_slug` を使用 |
 | Q1-3 | Closed | 高 | `medium` 作品は短編と同じく1回で完結公開するのか、それとも長編と同様に連載対象にするのか | 公開単位 | 原則1回公開。ただし `daily_max_chars` を超える場合は長編と同様に分割公開 |
 | Q2-1 | Closed | 高 | Fetcher が受け入れる原文ソース形式は TXT・HTML・EPUB・Plain Text URL のどこまでとするか | v1対応範囲 | v1では TXT / Plain Text URL のみ対応 |

@@ -191,7 +191,8 @@ class Publisher:
         content_parts = []
         for i, p in enumerate(paragraphs):
             if p.strip():
-                content_parts.append(f'<p class="mb-6">{p.replace("\n", "<br>")}</p>')
+                p_html = p.replace("\n", "<br>")
+                content_parts.append(f'<p class="mb-6">{p_html}</p>')
             if i == len(paragraphs) // 2:
                 content_parts.append('<div class="my-10 text-center"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6743751614716161" data-ad-slot="middle" data-ad-format="auto" data-full-width-responsive="true"></ins></div>')
         

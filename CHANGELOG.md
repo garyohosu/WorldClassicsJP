@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-03-07（全体レビュー・テンプレート追加）
+
+- `REVIEW_REPORT.md`: 全体レビューレポートを追加（設計品質、実装品質、テストカバレッジの評価）
+- `templates/translate_prompt.md`: 翻訳プロンプトテンプレートを新規作成
+- `config.yaml.template`: 設定ファイルテンプレートを新規作成
+- `src/worldclassicsjp/exceptions.py`: カスタム例外クラスを追加（TemporaryError, PermanentError 等）
+- `README.md`: セットアップ手順を詳細化（設定ファイル、Ollama、翻訳プロンプト）
+
+**レビュー結果**:
+- 総合評価: ⭐⭐⭐⭐⭐ (5/5)
+- プロジェクト成熟度: 85%
+- OpenClaw による CLI 実装の準備: ✅ 完了
+
 ## 2026-03-07（TDD テストスイート追加: 109 tests all green）
 
 - `pyproject.toml`: パッケージ定義・ビルドシステム（setuptools）・pytest 設定を追加

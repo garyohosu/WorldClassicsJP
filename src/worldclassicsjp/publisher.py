@@ -240,7 +240,7 @@ class Publisher:
             {nav_html}
 
             <div class="glass rounded-2xl p-6 sm:p-8 md:p-10 border border-line/80">
-                <div class="mx-auto max-w-2xl font-serif tracking-wide">
+                <div class="wc-prose mx-auto font-serif tracking-wide">
                     {content_html}
                 </div>
             </div>
@@ -573,6 +573,18 @@ class Publisher:
     .neon-line {{
         background: linear-gradient(90deg, transparent, rgba(13,97,87,.7), rgba(192,109,27,.6), transparent);
         height: 1px;
+    }}
+    /* Tailwind不達時でも本文可読性を維持 */
+    .wc-prose {{ max-width: 760px; margin: 0 auto; }}
+    .wc-prose p {{
+        margin: 0 0 1.25rem;
+        line-height: 1.95;
+        font-size: 1.08rem;
+        letter-spacing: 0.02em;
+        color: #1f1b18;
+    }}
+    @media (max-width: 640px) {{
+        .wc-prose p {{ font-size: 1rem; line-height: 1.9; }}
     }}
     </style>
 </head>

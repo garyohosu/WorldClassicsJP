@@ -25,3 +25,20 @@ htmlcov/
 .vscode/
 .idea/
 *.swp
+
+# 設定ファイル（テンプレートのみコミット）
+config.yaml
+
+# 運用データ
+/data/
+/logs/
+/tmp_build/
+
+# 公開サイト（GitHub Pagesで管理）
+/index.html
+/works/
+/authors/
+/assets/
+/rss.xml
+/sitemap.xml
+/robots.txt

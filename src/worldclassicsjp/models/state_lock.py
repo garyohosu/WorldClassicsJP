@@ -1,5 +1,7 @@
 """StateLock — /data/state.lock 排他実行制御"""
 
+from __future__ import annotations
+
 import json
 import os
 from dataclasses import dataclass, field

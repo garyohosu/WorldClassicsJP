@@ -1,0 +1,32 @@
+[
+  {
+    "work_id": 1,
+    "work_slug": "the-raven",
+    "title": "The Raven",
+    "title_ja": "大鴉",
+    "author_name": "Edgar Allan Poe",
+    "author_name_ja": "エドガー・アラン・ポー",
+    "author_slug": "edgar-allan-poe",
+    "source_url": "https://www.gutenberg.org/cache/epub/1065/pg1065.txt",
+    "source_type": "text_url",
+    "death_year": 1849,
+    "pd_verified": true,
+    "length_class": "short",
+    "parts_total": 1
+  },
+  {
+    "work_id": 2,
+    "work_slug": "frankenstein",
+    "title": "Frankenstein",
+    "title_ja": "フランケンシュタイン",
+    "author_name": "Mary Shelley",
+    "author_name_ja": "メアリー・シェリー",
+    "author_slug": "mary-shelley",
+    "source_url": "https://www.gutenberg.org/cache/epub/84/pg84.txt",
+    "source_type": "text_url",
+    "death_year": 1851,
+    "pd_verified": true,
+    "length_class": "long",
+    "parts_total": 0
+  }
+]

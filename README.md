@@ -93,28 +93,31 @@ Codex CLI の詳細は https://codex.storage を参照してください。
 
 ## 起動方法
 
-現時点のリポジトリはライブラリ実装とテストが中心で、日次パイプラインを起動する単一の CLI エントリーポイントはまだ入っていません。
-
-開発・検証時の実行:
+### 日次パイプライン実行（実装済み）
 
 ```bash
-cd /home/garyo/WorldClassicsJP
-. .venv/bin/activate
-pytest -q
+cd /home/garyo/.openclaw/workspace/WorldClassicsJP
+PYTHONPATH=src python3 -m worldclassicsjp.run
 ```
 
-OpenClaw cron から WSL2 内で Codex CLI を呼ぶ想定例:
+オプション:
 
 ```bash
-cd /home/garyo/WorldClassicsJP
-. .venv/bin/activate
-codex exec -m gpt-5.4 "Read README.md and worldclassicsjp_codex_instructions/CODEX_CLI_INSTRUCTIONS.md, then implement the system."
+# Git commit/push なしで生成確認のみ
+PYTHONPATH=src python3 -m worldclassicsjp.run --no-git
+
+# 日付指定
+PYTHONPATH=src python3 -m worldclassicsjp.run --date 2026-03-08
 ```
 
-cron 例:
+### OpenClaw cron 例（WSL2/Linux）
 
-```cron
-0 3 * * * cd /home/garyo/WorldClassicsJP && . .venv/bin/activate && codex exec -m gpt-5.4 "Read README.md and worldclassicsjp_codex_instructions/CODEX_CLI_INSTRUCTIONS.md, then implement the system."
+```bash
+openclaw cron add \
+  --name "WorldClassicsJP daily" \
+  --cron "0 3 * * *" \
+  --tz "Asia/Tokyo" \
+  --session isolated \
+  --message "作業ディレクトリ /home/garyo/.openclaw/workspace/WorldClassicsJP で PYTHONPATH=src python3 -m worldclassicsjp.run を実行。成功時は公開URLとcommitを報告、失敗時は要点3行で報告。"
 ```
 
-OpenClaw 側ではこの cron を WSL2 の Ubuntu 環境で実行し、作業ディレクトリを `/home/garyo/WorldClassicsJP` に固定します。

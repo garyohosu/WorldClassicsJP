@@ -55,7 +55,7 @@ classDiagram
         +str pre_publish_head
         +load()$ State
         +save(tmpPath) void
-        +initDefault(minWorkId) State$
+        +initDefault(minWorkId)$ State
     }
 
     class StateLock {
@@ -232,9 +232,9 @@ classDiagram
 
     class RightsLabel {
         <<enumeration>>
-        public_domain
-        cc0
-        public_domain_mark
+        Public domain
+        CC0
+        Public Domain Mark
     }
 
     %% =====================================================
@@ -288,7 +288,7 @@ classDiagram
 | `StateLock` | `/data/state.lock` |
 | `Config` | `/config.yaml` |
 | `RunLog` | `/logs/YYYY/MM/DD/{run_id}.json` |
-| `ImageMeta` | `/assets/images/**/{slug}.yaml`（sidecar） |
+| `ImageMeta` | `/assets/images/authors/<author-slug>.yaml` または `/assets/images/illustrations/<image-file>.yaml`（画像ファイルと同名の sidecar） |
 | *(hash ファイル)* | `/data/works_master.hash`（`ImageJob` が管理） |
 | *(ビルド作業域)* | `/tmp_build/`（`Publisher` が使用、公開後に削除） |
 

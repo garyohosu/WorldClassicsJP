@@ -52,6 +52,18 @@
         background: linear-gradient(90deg, transparent, rgba(13,97,87,.7), rgba(192,109,27,.6), transparent);
         height: 1px;
     }
+    /* Tailwind不達時でも本文可読性を維持 */
+    .wc-prose { max-width: 760px; margin: 0 auto; }
+    .wc-prose p {
+        margin: 0 0 1.25rem;
+        line-height: 1.95;
+        font-size: 1.08rem;
+        letter-spacing: 0.02em;
+        color: #1f1b18;
+    }
+    @media (max-width: 640px) {
+        .wc-prose p { font-size: 1rem; line-height: 1.9; }
+    }
     </style>
 </head>
 <body class="bg-[#f8f2e8] min-h-screen overflow-x-hidden">
@@ -79,9 +91,9 @@
             
             <div class="glass shadow-pane rounded-3xl p-6 sm:p-10 relative overflow-hidden reveal">
                 <p class="text-xs tracking-[0.18em] text-slate mb-2">本日の新着</p>
-                <h3 class="jp-title text-2xl sm:text-4xl mb-4">フランケンシュタイン</h3>
-                <p class="text-slate mb-6">メアリー・シェリー</p>
-                <a href="https://garyohosu.github.io/WorldClassicsJP/works/frankenstein/" 
+                <h3 class="jp-title text-2xl sm:text-4xl mb-4">真面目が肝心</h3>
+                <p class="text-slate mb-6">オスカー・ワイルド</p>
+                <a href="https://garyohosu.github.io/WorldClassicsJP/works/the-importance-of-being-earnest/" 
                    class="inline-block px-6 py-2.5 rounded-full bg-pine text-white hover:bg-opacity-90 transition-all">
                    今すぐ読む
                 </a>
@@ -96,16 +108,23 @@
                     <div class="space-y-4">
                         
             <div class="rounded-2xl border border-line p-4 bg-paper/70">
-                <p class="text-sm font-semibold mb-1">大鴉</p>
-                <p class="text-xs text-slate">エドガー・アラン・ポー</p>
-                <a href="https://garyohosu.github.io/WorldClassicsJP/works/the-raven/" class="text-xs text-pine mt-2 inline-block">続きを読む →</a>
+                <p class="text-sm font-semibold mb-1">黄色い壁紙</p>
+                <p class="text-xs text-slate">シャーロット・パーキンス・ギルマン</p>
+                <a href="https://garyohosu.github.io/WorldClassicsJP/works/the-yellow-wallpaper/" class="text-xs text-pine mt-2 inline-block">続きを読む →</a>
             </div>
             
 
             <div class="rounded-2xl border border-line p-4 bg-paper/70">
-                <p class="text-sm font-semibold mb-1">フランケンシュタイン</p>
-                <p class="text-xs text-slate">メアリー・シェリー</p>
-                <a href="https://garyohosu.github.io/WorldClassicsJP/works/frankenstein/" class="text-xs text-pine mt-2 inline-block">続きを読む →</a>
+                <p class="text-sm font-semibold mb-1">タイムマシン</p>
+                <p class="text-xs text-slate">H.G.ウェルズ</p>
+                <a href="https://garyohosu.github.io/WorldClassicsJP/works/the-time-machine/" class="text-xs text-pine mt-2 inline-block">続きを読む →</a>
+            </div>
+            
+
+            <div class="rounded-2xl border border-line p-4 bg-paper/70">
+                <p class="text-sm font-semibold mb-1">真面目が肝心</p>
+                <p class="text-xs text-slate">オスカー・ワイルド</p>
+                <a href="https://garyohosu.github.io/WorldClassicsJP/works/the-importance-of-being-earnest/" class="text-xs text-pine mt-2 inline-block">続きを読む →</a>
             </div>
             
                     </div>

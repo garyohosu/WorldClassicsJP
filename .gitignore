@@ -34,11 +34,5 @@ config.yaml
 /logs/
 /tmp_build/
 
-# 公開サイト（GitHub Pagesで管理）
-/index.html
-/works/
-/authors/
-/assets/
-/rss.xml
-/sitemap.xml
-/robots.txt
+# 公開サイト（GitHub Pages）
+# 生成物を公開するため追跡対象にする

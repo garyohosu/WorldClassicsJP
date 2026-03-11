@@ -1,7 +1,7 @@
 {
-  "next_work_id": 3,
+  "next_work_id": 2,
   "current_work_id": 2,
-  "current_part": 1,
+  "current_part": 2,
   "current_segment_id": "",
   "current_stage": "idle",
   "current_work_status": "active",

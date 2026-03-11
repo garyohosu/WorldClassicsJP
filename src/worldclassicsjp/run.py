@@ -79,14 +79,18 @@ def load_config() -> Config:
     return Config(host="localhost", port=11434, model="phi3:mini", daily_max_chars=12000, current_phase=1)
 
 
-def fetch_source_text(url: str, limit_chars: int) -> str:
+def fetch_source_text(url: str, limit_chars: int, offset: int = 0) -> tuple[str, bool]:
+    """テキストを取得し、(chunk, has_more) のタプルを返す"""
     r = requests.get(url, timeout=45, headers={"User-Agent": "WorldClassicsJP/1.0"})
     r.raise_for_status()
     text = r.text
     text = re.sub(r"\*\*\*\s*START OF .*?\*\*\*", "", text, flags=re.I | re.S)
     text = re.sub(r"\*\*\*\s*END OF .*", "", text, flags=re.I | re.S)
     text = re.sub(r"\n{3,}", "\n\n", text)
-    return text.strip()[:limit_chars]
+    text = text.strip()
+    chunk = text[offset:offset + limit_chars]
+    has_more = len(text) > offset + limit_chars
+    return chunk, has_more
 
 
 def translate_to_ja(text_en: str, title: str, author: str) -> TranslationResult:
@@ -145,9 +149,22 @@ def run(date_str: str, no_git: bool = False) -> dict:
         state.save(STATE_PATH)
         lock.heartbeat()
 
-        source_text = fetch_source_text(w.source_url, cfg.daily_max_chars)
+        # 長編作品は current_part のオフセットから取得
+        char_offset = (state.current_part - 1) * cfg.daily_max_chars
+        source_text, has_more = fetch_source_text(w.source_url, cfg.daily_max_chars, char_offset)
+
+        if not source_text:
+            # この作品のテキストは全て処理済み → 次の作品へ
+            state.next_work_id = w.work_id + 1
+            state.current_part = 1
+            state.current_stage = Stage.IDLE
+            state.current_work_status = WorkStatus.ACTIVE
+            state.save(STATE_PATH)
+            return {"status": "work_complete", "work": w.work_slug}
+
         tr = translate_to_ja(source_text, w.title, w.author_name)
 
+        current_part = state.current_part
         pub = Publisher(repo_root=ROOT, base_url="https://garyohosu.github.io/WorldClassicsJP/")
         pre_head = pub.record_pre_publish_head()
         state.pre_publish_head = pre_head
@@ -161,8 +178,8 @@ def run(date_str: str, no_git: bool = False) -> dict:
             same = [x for x in published if x.author_slug == pw.author_slug]
             pub.build_author_page(auth, same)
             if pw.work_id == w.work_id:
-                pub.build_work_page(pw, [1])
-                pub.build_part_page(pw, 1, tr)
+                pub.build_work_page(pw, list(range(1, current_part + 1)))
+                pub.build_part_page(pw, current_part, tr)
             else:
                 pub.build_work_page(pw, [1])
         pub.generate_rss(published)
@@ -171,16 +188,23 @@ def run(date_str: str, no_git: bool = False) -> dict:
 
         pushed = False
         if not no_git:
-            pushed = pub.commit_and_push(message=f"daily: {date_str} publish {w.work_slug}")
+            pushed = pub.commit_and_push(message=f"daily: {date_str} publish {w.work_slug} part-{current_part:03d}")
             if not pushed:
                 pub.rollback(pre_head)
                 raise RuntimeError("git commit/push failed")
 
         state.current_stage = Stage.IDLE
         state.current_work_status = WorkStatus.ACTIVE
-        state.next_work_id = w.work_id + 1
         state.last_processed_date = date_str
         state.pre_publish_head = ""
+        if has_more:
+            # まだテキストが残っている → 同じ作品の次のパートへ
+            state.next_work_id = w.work_id
+            state.current_part = current_part + 1
+        else:
+            # 作品完了 → 次の作品へ
+            state.next_work_id = w.work_id + 1
+            state.current_part = 1
         state.save(STATE_PATH)
         pub.cleanup()
 
@@ -191,7 +215,8 @@ def run(date_str: str, no_git: bool = False) -> dict:
         return {
             "status": "ok",
             "work": w.work_slug,
-            "url": f"https://garyohosu.github.io/WorldClassicsJP/works/{w.work_slug}/",
+            "part": current_part,
+            "url": f"https://garyohosu.github.io/WorldClassicsJP/works/{w.work_slug}/part-{current_part:03d}/",
             "git_pushed": pushed,
         }
     except Exception as exc:

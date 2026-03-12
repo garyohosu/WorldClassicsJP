@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>お問い合わせ | WorldClassicsJP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    ink: '#14110f',
+                    mist: '#f5f0e6',
+                    paper: '#fffdf8',
+                    line: '#dfd4bf',
+                    pine: '#0d6157',
+                    amber: '#c06d1b',
+                    slate: '#6f6555'
+                }
+            }
+        }
+    }
+    </script>
+    <style>
+    body { font-family: 'Zen Kaku Gothic New', sans-serif; background: #f3ecdd; color: #14110f; }
+    .jp-title { font-family: 'Shippori Mincho B1', serif; }
+    .glass {
+        background: linear-gradient(145deg, rgba(255,253,247,.9), rgba(255,249,236,.78));
+        border: 1px solid rgba(223,212,191,.9);
+        backdrop-filter: blur(8px);
+    }
+    a { color: #0d6157; }
+    </style>
+</head>
+<body class="min-h-screen">
+    <header class="sticky top-0 z-40 border-b border-line/70 bg-paper/80 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+            <a href="https://garyohosu.github.io/WorldClassicsJP/" class="block">
+                <p class="text-xs tracking-[0.18em] text-slate uppercase">WorldClassicsJP</p>
+                <h1 class="jp-title text-xl">世界文学の至宝</h1>
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+        <section class="glass p-6 sm:p-10 rounded-3xl space-y-8 leading-relaxed">
+            <header>
+                <p class="text-xs tracking-[0.2em] text-slate mb-2 uppercase">Contact</p>
+                <h1 class="jp-title text-3xl sm:text-5xl">お問い合わせ</h1>
+                <p class="mt-4">WorldClassicsJP へのお問い合わせは X または GitHub からお願いします。</p>
+            </header>
+
+            <ul class="list-disc list-inside space-y-3">
+                <li><a href="https://x.com/hantani">X: @hantani</a></li>
+                <li><a href="https://github.com/garyohosu/WorldClassicsJP">GitHub: garyohosu/WorldClassicsJP</a></li>
+            </ul>
+
+            <div class="space-y-3 text-slate">
+                <p>すべてのメッセージに返信できるとは限りません。返信を保証するものではありません。</p>
+                <p>営業・宣伝に関するご連絡には返信しない場合があります。不具合報告や公開内容に関するご連絡は、GitHub から送っていただくと確認しやすくなります。</p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

@@ -52,6 +52,18 @@
         background: linear-gradient(90deg, transparent, rgba(13,97,87,.7), rgba(192,109,27,.6), transparent);
         height: 1px;
     }
+    /* Tailwind不達時でも本文可読性を維持 */
+    .wc-prose { max-width: 760px; margin: 0 auto; }
+    .wc-prose p {
+        margin: 0 0 1.25rem;
+        line-height: 1.95;
+        font-size: 1.08rem;
+        letter-spacing: 0.02em;
+        color: #1f1b18;
+    }
+    @media (max-width: 640px) {
+        .wc-prose p { font-size: 1rem; line-height: 1.9; }
+    }
     </style>
 </head>
 <body class="bg-[#f8f2e8] min-h-screen overflow-x-hidden">
@@ -82,49 +94,55 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
-            <a href="https://garyohosu.github.io/WorldClassicsJP/authors/edgar-allan-poe/"
+                
+            <a href="https://garyohosu.github.io/WorldClassicsJP/authors/edgar-allan-poe/" 
                class="glass p-6 rounded-2xl border border-line hover:border-pine transition-all block group">
                 <h4 class="jp-title text-xl group-hover:text-pine transition-colors">エドガー・アラン・ポー</h4>
                 <p class="text-xs text-slate mt-1 uppercase tracking-wider">Edgar Allan Poe</p>
             </a>
+            
 
-            <a href="https://garyohosu.github.io/WorldClassicsJP/authors/mary-shelley/"
+            <a href="https://garyohosu.github.io/WorldClassicsJP/authors/mary-shelley/" 
                class="glass p-6 rounded-2xl border border-line hover:border-pine transition-all block group">
                 <h4 class="jp-title text-xl group-hover:text-pine transition-colors">メアリー・シェリー</h4>
                 <p class="text-xs text-slate mt-1 uppercase tracking-wider">Mary Shelley</p>
             </a>
+            
 
-            <a href="https://garyohosu.github.io/WorldClassicsJP/authors/lewis-carroll/"
+            <a href="https://garyohosu.github.io/WorldClassicsJP/authors/lewis-carroll/" 
                class="glass p-6 rounded-2xl border border-line hover:border-pine transition-all block group">
                 <h4 class="jp-title text-xl group-hover:text-pine transition-colors">ルイス・キャロル</h4>
                 <p class="text-xs text-slate mt-1 uppercase tracking-wider">Lewis Carroll</p>
             </a>
+            
 
-            <a href="https://garyohosu.github.io/WorldClassicsJP/authors/charlotte-perkins-gilman/"
+            <a href="https://garyohosu.github.io/WorldClassicsJP/authors/charlotte-perkins-gilman/" 
                class="glass p-6 rounded-2xl border border-line hover:border-pine transition-all block group">
                 <h4 class="jp-title text-xl group-hover:text-pine transition-colors">シャーロット・パーキンス・ギルマン</h4>
                 <p class="text-xs text-slate mt-1 uppercase tracking-wider">Charlotte Perkins Gilman</p>
             </a>
+            
 
-            <a href="https://garyohosu.github.io/WorldClassicsJP/authors/h-g-wells/"
+            <a href="https://garyohosu.github.io/WorldClassicsJP/authors/h-g-wells/" 
                class="glass p-6 rounded-2xl border border-line hover:border-pine transition-all block group">
                 <h4 class="jp-title text-xl group-hover:text-pine transition-colors">H.G.ウェルズ</h4>
                 <p class="text-xs text-slate mt-1 uppercase tracking-wider">H.G. Wells</p>
             </a>
+            
 
-            <a href="https://garyohosu.github.io/WorldClassicsJP/authors/oscar-wilde/"
+            <a href="https://garyohosu.github.io/WorldClassicsJP/authors/oscar-wilde/" 
                class="glass p-6 rounded-2xl border border-line hover:border-pine transition-all block group">
                 <h4 class="jp-title text-xl group-hover:text-pine transition-colors">オスカー・ワイルド</h4>
                 <p class="text-xs text-slate mt-1 uppercase tracking-wider">Oscar Wilde</p>
             </a>
+            
 
-            <a href="https://garyohosu.github.io/WorldClassicsJP/authors/rudyard-kipling/"
+            <a href="https://garyohosu.github.io/WorldClassicsJP/authors/rudyard-kipling/" 
                class="glass p-6 rounded-2xl border border-line hover:border-pine transition-all block group">
                 <h4 class="jp-title text-xl group-hover:text-pine transition-colors">ラドヤード・キプリング</h4>
                 <p class="text-xs text-slate mt-1 uppercase tracking-wider">Rudyard Kipling</p>
             </a>
-
+            
             </div>
 
             <div class="mt-12 text-center">

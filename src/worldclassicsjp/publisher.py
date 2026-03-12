@@ -67,8 +67,8 @@ class Publisher:
             </div>
             """
 
-        # 連載中作品 (最新 3 件)
-        serializing_works = works[-3:] if works else []
+        # 連載中作品（全件）
+        serializing_works = works if works else []
         serializing_html = "\n".join(
             f"""
             <div class="rounded-2xl border border-line p-4 bg-paper/70">

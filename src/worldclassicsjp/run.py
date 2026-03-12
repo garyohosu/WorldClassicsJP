@@ -182,6 +182,11 @@ def run(date_str: str, no_git: bool = False) -> dict:
                 pub.build_part_page(pw, current_part, tr)
             else:
                 pub.build_work_page(pw, [1])
+        unique_authors = list({
+            pw.author_slug: AuthorInfo(name=pw.author_name, name_ja=pw.author_name_ja, slug=pw.author_slug, death_year=pw.death_year)
+            for pw in published
+        }.values())
+        pub.build_authors_list_page(unique_authors)
         pub.generate_rss(published)
         pub.generate_sitemap(published)
         pub.reflect_to_production()

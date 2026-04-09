@@ -15,6 +15,7 @@ class Config:
     model: str
     daily_max_chars: int
     current_phase: int
+    parts_per_run: int = 1
 
     @classmethod
     def load(cls, path: Path) -> "Config":
@@ -34,6 +35,7 @@ class Config:
             model=str(d["model"]),
             daily_max_chars=int(d["daily_max_chars"]),
             current_phase=int(d["current_phase"]),
+            parts_per_run=int(d.get("parts_per_run", 1)),
         )
         if cfg.current_phase not in VALID_PHASES:
             raise ValueError(
@@ -42,5 +44,9 @@ class Config:
         if cfg.daily_max_chars <= 0:
             raise ValueError(
                 f"daily_max_chars は正の整数でなければなりません: {cfg.daily_max_chars}"
+            )
+        if cfg.parts_per_run < 1:
+            raise ValueError(
+                f"parts_per_run は 1 以上の整数でなければなりません: {cfg.parts_per_run}"
             )
         return cfg

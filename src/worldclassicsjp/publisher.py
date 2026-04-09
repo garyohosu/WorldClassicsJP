@@ -424,6 +424,33 @@ class Publisher:
         xml = ET.tostring(urlset, encoding="unicode")
         self._write_text(self.tmp_build_dir / "sitemap.xml", xml)
 
+    def patch_next_link(self, work, prev_part: int, next_part: int) -> None:
+        """
+        本番に存在する prev_part のページを読み込み、
+        無効化されている「次へ」リンクを next_part への有効リンクに書き換えて
+        tmp_build へ出力する。reflect_to_production() で上書きされることで反映される。
+        """
+        self._ensure_tmp_build()
+        prod_path = self.repo_root / "works" / work.work_slug / f"part-{prev_part:03d}" / "index.html"
+        if not prod_path.exists():
+            return
+        html = prod_path.read_text(encoding="utf-8")
+        old = (
+            '<a href="#" class="px-3 py-1 rounded-full border border-line'
+            ' hover:border-pine opacity-30 cursor-not-allowed">次へ</a>'
+        )
+        next_url = self._url(f"works/{work.work_slug}/part-{next_part:03d}/")
+        new = (
+            f'<a href="{next_url}"'
+            ' class="px-3 py-1 rounded-full border border-line hover:border-pine">次へ</a>'
+        )
+        if old in html:
+            html = html.replace(old, new)
+            self._write_text(
+                self.tmp_build_dir / "works" / work.work_slug / f"part-{prev_part:03d}" / "index.html",
+                html,
+            )
+
     # ── 反映・コミット ────────────────────────────────────────────────
 
     def record_pre_publish_head(self) -> str:

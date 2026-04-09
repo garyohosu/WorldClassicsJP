@@ -149,79 +149,97 @@ def run(date_str: str, no_git: bool = False) -> dict:
         state.save(STATE_PATH)
         lock.heartbeat()
 
-        # 長編作品は current_part のオフセットから取得
-        char_offset = (state.current_part - 1) * cfg.daily_max_chars
-        source_text, has_more = fetch_source_text(w.source_url, cfg.daily_max_chars, char_offset)
+        pub = Publisher(repo_root=ROOT, base_url="https://garyohosu.github.io/WorldClassicsJP/")
+        published_parts: list[dict] = []
+        pushed = False
 
-        if not source_text:
-            # この作品のテキストは全て処理済み → 次の作品へ
-            state.next_work_id = w.work_id + 1
-            state.current_part = 1
+        for _i in range(cfg.parts_per_run):
+            # 長編作品は current_part のオフセットから取得
+            char_offset = (state.current_part - 1) * cfg.daily_max_chars
+            source_text, has_more = fetch_source_text(w.source_url, cfg.daily_max_chars, char_offset)
+
+            if not source_text:
+                # この作品のテキストは全て処理済み → 次の作品へ
+                state.next_work_id = w.work_id + 1
+                state.current_part = 1
+                state.current_stage = Stage.IDLE
+                state.current_work_status = WorkStatus.ACTIVE
+                state.save(STATE_PATH)
+                break
+
+            tr = translate_to_ja(source_text, w.title, w.author_name)
+
+            current_part = state.current_part
+            # 前のパートが存在する場合、「次へ」リンクを有効化する
+            if current_part > 1:
+                pub.patch_next_link(w, current_part - 1, current_part)
+            pre_head = pub.record_pre_publish_head()
+            state.pre_publish_head = pre_head
+            state.current_stage = Stage.PUBLISH
+            state.save(STATE_PATH)
+
+            published = [x for x in works if x.pd_verified and x.work_id <= w.work_id]
+            pub.build_index_page(published)
+            for pw in published:
+                auth = AuthorInfo(name=pw.author_name, name_ja=pw.author_name_ja, slug=pw.author_slug, death_year=pw.death_year)
+                same = [x for x in published if x.author_slug == pw.author_slug]
+                pub.build_author_page(auth, same)
+                if pw.work_id == w.work_id:
+                    pub.build_work_page(pw, list(range(1, current_part + 1)))
+                    pub.build_part_page(pw, current_part, tr)
+                else:
+                    pub.build_work_page(pw, [1])
+            unique_authors = list({
+                pw.author_slug: AuthorInfo(name=pw.author_name, name_ja=pw.author_name_ja, slug=pw.author_slug, death_year=pw.death_year)
+                for pw in published
+            }.values())
+            pub.build_authors_list_page(unique_authors)
+            pub.generate_rss(published)
+            pub.generate_sitemap(published)
+            pub.reflect_to_production()
+
+            pushed = False
+            if not no_git:
+                pushed = pub.commit_and_push(message=f"daily: {date_str} publish {w.work_slug} part-{current_part:03d}")
+                if not pushed:
+                    pub.rollback(pre_head)
+                    raise RuntimeError("git commit/push failed")
+
             state.current_stage = Stage.IDLE
             state.current_work_status = WorkStatus.ACTIVE
-            state.save(STATE_PATH)
-            return {"status": "work_complete", "work": w.work_slug}
-
-        tr = translate_to_ja(source_text, w.title, w.author_name)
-
-        current_part = state.current_part
-        pub = Publisher(repo_root=ROOT, base_url="https://garyohosu.github.io/WorldClassicsJP/")
-        pre_head = pub.record_pre_publish_head()
-        state.pre_publish_head = pre_head
-        state.current_stage = Stage.PUBLISH
-        state.save(STATE_PATH)
-
-        published = [x for x in works if x.pd_verified and x.work_id <= w.work_id]
-        pub.build_index_page(published)
-        for pw in published:
-            auth = AuthorInfo(name=pw.author_name, name_ja=pw.author_name_ja, slug=pw.author_slug, death_year=pw.death_year)
-            same = [x for x in published if x.author_slug == pw.author_slug]
-            pub.build_author_page(auth, same)
-            if pw.work_id == w.work_id:
-                pub.build_work_page(pw, list(range(1, current_part + 1)))
-                pub.build_part_page(pw, current_part, tr)
+            state.last_processed_date = date_str
+            state.pre_publish_head = ""
+            if has_more:
+                # まだテキストが残っている → 同じ作品の次のパートへ
+                state.next_work_id = w.work_id
+                state.current_part = current_part + 1
             else:
-                pub.build_work_page(pw, [1])
-        unique_authors = list({
-            pw.author_slug: AuthorInfo(name=pw.author_name, name_ja=pw.author_name_ja, slug=pw.author_slug, death_year=pw.death_year)
-            for pw in published
-        }.values())
-        pub.build_authors_list_page(unique_authors)
-        pub.generate_rss(published)
-        pub.generate_sitemap(published)
-        pub.reflect_to_production()
+                # 作品完了 → 次の作品へ
+                state.next_work_id = w.work_id + 1
+                state.current_part = 1
+            state.save(STATE_PATH)
 
-        pushed = False
-        if not no_git:
-            pushed = pub.commit_and_push(message=f"daily: {date_str} publish {w.work_slug} part-{current_part:03d}")
-            if not pushed:
-                pub.rollback(pre_head)
-                raise RuntimeError("git commit/push failed")
+            published_parts.append({
+                "part": current_part,
+                "url": f"https://garyohosu.github.io/WorldClassicsJP/works/{w.work_slug}/part-{current_part:03d}/",
+            })
 
-        state.current_stage = Stage.IDLE
-        state.current_work_status = WorkStatus.ACTIVE
-        state.last_processed_date = date_str
-        state.pre_publish_head = ""
-        if has_more:
-            # まだテキストが残っている → 同じ作品の次のパートへ
-            state.next_work_id = w.work_id
-            state.current_part = current_part + 1
-        else:
-            # 作品完了 → 次の作品へ
-            state.next_work_id = w.work_id + 1
-            state.current_part = 1
-        state.save(STATE_PATH)
+            if not has_more:
+                break
+
         pub.cleanup()
 
         run_log.stage = "done"
         run_log.status = "success"
         run_log.save(LOG_DIR / date_str[:4] / date_str[5:7] / date_str[8:10] / f"{lock.run_id}.json")
 
+        if not published_parts:
+            return {"status": "work_complete", "work": w.work_slug}
+
         return {
             "status": "ok",
             "work": w.work_slug,
-            "part": current_part,
-            "url": f"https://garyohosu.github.io/WorldClassicsJP/works/{w.work_slug}/part-{current_part:03d}/",
+            "parts": published_parts,
             "git_pushed": pushed,
         }
     except Exception as exc:

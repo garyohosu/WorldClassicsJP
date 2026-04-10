@@ -134,16 +134,6 @@ def run(date_str: str, no_git: bool = False) -> dict:
         works = WorksMaster.load_all(WORKS_MASTER_PATH)
         state = State.load(STATE_PATH)
 
-        candidates = [w for w in works if w.pd_verified and w.work_id >= state.next_work_id]
-        candidates.sort(key=lambda x: x.work_id)
-        if not candidates:
-            state.current_work_status = WorkStatus.EXHAUSTED
-            state.current_stage = Stage.IDLE
-            state.save(STATE_PATH)
-            return {"status": "exhausted"}
-
-        w = candidates[0]
-        state.current_work_id = w.work_id
         state.current_stage = Stage.TRANSLATE
         state.last_run_id = lock.run_id
         state.save(STATE_PATH)
@@ -154,18 +144,29 @@ def run(date_str: str, no_git: bool = False) -> dict:
         pushed = False
 
         for _i in range(cfg.parts_per_run):
+            # ループ先頭で作品を選択（前イテレーションで完了した場合は次の作品を選ぶ）
+            candidates = [w for w in works if w.pd_verified and w.work_id >= state.next_work_id]
+            candidates.sort(key=lambda x: x.work_id)
+            if not candidates:
+                state.current_work_status = WorkStatus.EXHAUSTED
+                state.current_stage = Stage.IDLE
+                state.save(STATE_PATH)
+                break
+            w = candidates[0]
+            state.current_work_id = w.work_id
+
             # 長編作品は current_part のオフセットから取得
             char_offset = (state.current_part - 1) * cfg.daily_max_chars
             source_text, has_more = fetch_source_text(w.source_url, cfg.daily_max_chars, char_offset)
 
             if not source_text:
-                # この作品のテキストは全て処理済み → 次の作品へ
+                # テキスト終端（状態不整合）→ 次の作品へ進んでループを続ける
                 state.next_work_id = w.work_id + 1
                 state.current_part = 1
                 state.current_stage = Stage.IDLE
                 state.current_work_status = WorkStatus.ACTIVE
                 state.save(STATE_PATH)
-                break
+                continue
 
             tr = translate_to_ja(source_text, w.title, w.author_name)
 
@@ -220,12 +221,10 @@ def run(date_str: str, no_git: bool = False) -> dict:
             state.save(STATE_PATH)
 
             published_parts.append({
+                "work": w.work_slug,
                 "part": current_part,
                 "url": f"https://garyohosu.github.io/WorldClassicsJP/works/{w.work_slug}/part-{current_part:03d}/",
             })
-
-            if not has_more:
-                break
 
         pub.cleanup()
 
@@ -234,11 +233,10 @@ def run(date_str: str, no_git: bool = False) -> dict:
         run_log.save(LOG_DIR / date_str[:4] / date_str[5:7] / date_str[8:10] / f"{lock.run_id}.json")
 
         if not published_parts:
-            return {"status": "work_complete", "work": w.work_slug}
+            return {"status": "exhausted"}
 
         return {
             "status": "ok",
-            "work": w.work_slug,
             "parts": published_parts,
             "git_pushed": pushed,
         }

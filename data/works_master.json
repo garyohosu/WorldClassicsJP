@@ -103,5 +103,20 @@
     "pd_verified": true,
     "length_class": "medium",
     "parts_total": 0
+  },
+  {
+    "work_id": 8,
+    "work_slug": "daddy-long-legs",
+    "title": "Daddy-Long-Legs",
+    "title_ja": "あしながおじさん",
+    "author_name": "Jean Webster",
+    "author_name_ja": "ジーン・ウェブスター",
+    "author_slug": "jean-webster",
+    "source_url": "https://www.gutenberg.org/cache/epub/157/pg157.txt",
+    "source_type": "text_url",
+    "death_year": 1916,
+    "pd_verified": true,
+    "length_class": "medium",
+    "parts_total": 0
   }
 ]

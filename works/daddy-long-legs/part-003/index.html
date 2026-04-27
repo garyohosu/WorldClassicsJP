@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>あしながおじさん 第3部 | WorldClassicsJP</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    ink: '#14110f',
+                    mist: '#f5f0e6',
+                    paper: '#fffdf8',
+                    line: '#dfd4bf',
+                    pine: '#0d6157',
+                    amber: '#c06d1b',
+                    slate: '#6f6555'
+                },
+                boxShadow: {
+                    pane: '0 18px 40px rgba(35, 23, 10, 0.12)'
+                }
+            }
+        }
+    }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/bundled/lenis.min.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6743751614716161" crossorigin="anonymous"></script>
+
+    <style>
+    body {
+        font-family: 'Zen Kaku Gothic New', sans-serif;
+        background: #f3ecdd;
+        color: #14110f;
+    }
+    .jp-title { font-family: 'Shippori Mincho B1', serif; }
+    .glass {
+        background: linear-gradient(145deg, rgba(255,253,247,.9), rgba(255,249,236,.78));
+        border: 1px solid rgba(223,212,191,.9);
+        backdrop-filter: blur(8px);
+    }
+    .neon-line {
+        background: linear-gradient(90deg, transparent, rgba(13,97,87,.7), rgba(192,109,27,.6), transparent);
+        height: 1px;
+    }
+    /* Tailwind不達時でも本文可読性を維持 */
+    .wc-prose { max-width: 760px; margin: 0 auto; }
+    .wc-prose p {
+        margin: 0 0 1.25rem;
+        line-height: 1.95;
+        font-size: 1.08rem;
+        letter-spacing: 0.02em;
+        color: #1f1b18;
+    }
+    @media (max-width: 640px) {
+        .wc-prose p { font-size: 1rem; line-height: 1.9; }
+    }
+    </style>
+</head>
+<body class="bg-[#f8f2e8] min-h-screen overflow-x-hidden">
+    <header class="sticky top-0 z-40 border-b border-line/70 bg-paper/80 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+            <a href="https://garyohosu.github.io/WorldClassicsJP/" class="block">
+                <p class="text-xs tracking-[0.18em] text-slate uppercase">WorldClassicsJP</p>
+                <h1 class="jp-title text-xl">世界文学の至宝</h1>
+            </a>
+            <nav class="hidden md:flex items-center gap-4 text-sm font-medium">
+                <a href="https://garyohosu.github.io/WorldClassicsJP/" class="hover:text-pine transition-colors">ホーム</a>
+                <a href="https://garyohosu.github.io/WorldClassicsJP/authors/" class="hover:text-pine transition-colors">作者一覧</a>
+                <a href="https://garyohosu.github.io/WorldClassicsJP/about/" class="hover:text-pine transition-colors">このサイトについて</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        
+        <article class="max-w-3xl mx-auto px-4 sm:px-6 py-10 reveal">
+            <header class="mb-12 text-center">
+                <p class="text-xs tracking-[0.2em] text-slate mb-2 uppercase">ジーン・ウェブスター</p>
+                <h1 class="jp-title text-2xl sm:text-4xl mb-4">あしながおじさん</h1>
+                <p class="text-pine tracking-widest font-semibold">第 3 部</p>
+            </header>
+
+            <div class="mb-8 text-center">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6743751614716161" data-ad-slot="top" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            </div>
+
+            
+        <div class="flex items-center justify-between gap-4 py-4 border-b border-line mb-8 sticky top-0 bg-paper/80 backdrop-blur-md z-30">
+            <div class="flex items-center gap-2">
+                <a href="https://garyohosu.github.io/WorldClassicsJP/works/daddy-long-legs/" class="px-3 py-1 rounded-full border border-line text-sm hover:border-pine">目次</a>
+            </div>
+            <div class="flex items-center gap-2 text-sm">
+                <a href="https://garyohosu.github.io/WorldClassicsJP/works/daddy-long-legs/part-002/" class="px-3 py-1 rounded-full border border-line hover:border-pine">前へ</a>
+                <span class="text-slate">3 / ??</span>
+                <a href="#" class="px-3 py-1 rounded-full border border-line hover:border-pine opacity-30 cursor-not-allowed">次へ</a>
+            </div>
+        </div>
+        
+
+            <div class="glass rounded-2xl p-6 sm:p-8 md:p-10 border border-line/80">
+                <div class="wc-prose mx-auto font-serif tracking-wide">
+                    <p class="mb-7 leading-9 text-[1.05rem] text-ink text-[1.1rem]">……と、あの人は言いました。十八年も訓練を受けてきたことを思えば、そんなこと、信じられませんでしょう？　ジョン・グリア孤児院の目的は（きっとご存じで、しかも大いにご賛同くださっているのでしょうけれど）、九十七人の孤児を九十七組の双子みたいにそっくり同じ子にしてしまうことなのです。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">いま私が少しばかりお見せしているこの並はずれた芸術的才能も、幼いころ、薪小屋の戸にチョークでリペット夫人の似顔絵を描いていたおかげで育まれました。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">私が育った家をこんなふうに批判して、お気を悪くなさらないといいのですが。もっとも、優位に立っていらっしゃるのはあなたのほうですものね。私があまり生意気になったら、小切手の支払いを止めてしまえばいいのですから。こんなことを言うなんて礼儀がなっていませんけれど、私に作法を期待しないでくださいね。捨て子養育院は、淑女の仕上げ学校ではありませんもの。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">ねえ、ダディ、大学でつらいのは勉強じゃないんです。つらいのは遊びのほう。女の子たちが何の話をしているのか、半分くらいはわからないんですもの。みんなの冗談は、私以外の全員が共有している過去に結びついているみたい。私はこの世界では外国人で、その言葉がわからないんです。みじめな気分ですよ。ずっと昔からそうでした。高校でも、女の子たちは固まって立って、ただ私を見るんです。私は変わっていて、みんなそれを知っていました。顔に『ジョン・グリア孤児院』と書いてあるのを、自分で感じられるくらいでした。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">それから、慈善家ぶった何人かが、わざわざ近寄ってきて、丁寧なことを言ってくれるんです。私はあの子たちをみんな大嫌いでした――とくに、親切ぶる子たちがいちばん。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">ここでは、私が孤児院で育ったことを誰も知りません。サリー・マクブライドには、父も母も亡くなっていて、親切な年配の紳士が大学へ行かせてくれているのだと言いました。そこまでは完全に本当のことです。臆病者だと思われたくはありません。でも、私はほかの女の子たちと同じでいたいんです。そして、あの恐ろしい孤児院が子ども時代の上に大きくのしかかっていること、それがたった一つの大きな違いなんです。あれに背を向けて、記憶を締め出すことができたなら、私だってほかのどの子にも負けないくらい好ましい子になれると思うの。根っこのところに本当の違いなんてないでしょう？</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">とにかく、サリー・マクブライドは私を好きでいてくれます！</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">敬具<br>ジュディ・アボット<br>（旧名ジェルーシャ）</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">土曜の朝</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">今この手紙を読み返してみたら、ずいぶん陰気っぽく聞こえますね。でも、月曜の朝提出の作文課題があるし、幾何の復習もあるし、そのうえひどく鼻風邪をひいてるんだって、想像してくださらない？</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">日曜</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">昨日これを投函し忘れたので、憤慨した追伸を書き加えます。今朝、礼拝に司教さまがいらして、何とおっしゃったと思います？</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">「聖書の中で私たちに与えられた最も恵み深い約束とはこれです。『貧しい人々は、いつもあなたがたと共にいる。』彼らは、私たちが慈善深くあるために、この世に置かれているのです」</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">ご注目ください、貧しい人たちは、何か役に立つ家畜みたいなものなんですって。もし私がこんなに完璧な淑女に成長していなかったら、礼拝のあとで司教のところへ行って、思っていることを全部言ってやったでしょうに。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">十月二十五日</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">親愛なるダディ・ロング・レッグズ様</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">私、バスケットボール部に入ったんです。左肩のあざをお見せしたいくらい。青とマホガニー色で、その間に細いオレンジ色の筋が入っているんですよ。ジュリア・ペンドルトンもチームに入ろうとしたけれど、だめでした。ばんざい！</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">ほらね、私ってなんて意地悪な性格なんでしょう。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">大学はますます楽しくなってきました。女の子たちも先生たちも授業もキャンパスも、食べるものまで好きです。週に二回はアイスクリームが出るし、とうもろこし粥なんて一度も出ません。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">あなたは私からの便りは月に一度でいいとおっしゃっていましたよね？　それなのに私は、数日おきに手紙を浴びせるみたいに送ってしまっています！　でも、この新しい冒険の数々にすっかり興奮してしまって、どうしても誰かに話さずにはいられないんです。そして、私が知っている中で、その相手はあなただけ。どうかこのはしゃぎぶりをお許しください。じきに落ち着きますから。もし私の手紙が退屈でしたら、くずかごに放り込んでくださってかまいません。次は十一月の半ばまで、もう書かないと約束します。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">おしゃべりこの上なく<br>ジュディ・アボット</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">十一月十五日</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">親愛なるダディ・ロング・レッグズ様</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">今日覚えたことを聞いてください。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">正多角錐台の側面積は、二つの底面の周の長さの和に、各台形の高さを掛け、その半分に等しい。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">本当らしく聞こえないけれど、本当なんです――証明だってできます！</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">私の服のこと、まだお話ししたことがありませんでしたっけ、ダディ？　六着もあるんです、みんな新品で、きれいで、私のために買ってもらったもの――誰かもっと大きな人のお下がりじゃなくて。これが孤児の生涯において、どれほど画期的な出来事か、ひょっとするとおわかりにならないかもしれませんね。くださったのはあなたです。私は本当に、本当に、ほんとうに感謝しています。教育を受けるのもすばらしいことだけれど、新しいドレスを六着も自分のものとして持つ、あの目の回るような体験にはかないません。</p>
+<div class="my-10 text-center"><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6743751614716161" data-ad-slot="middle" data-ad-format="auto" data-full-width-responsive="true"></ins></div>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">選んでくれたのは訪問委員会のプリチャード嬢で、リペット夫人じゃありません――ありがたいことに。イブニングドレスは絹地の上にピンクのモスリンを重ねたもので（あれを着ると私、すごくきれいなんです）、青い教会用のドレスもあるし、赤い薄絹に東洋風の飾りがついた夕食会用のドレスもあるし（まるでジプシーみたいに見えるの）、それから薔薇色のシャリ生地のドレス、灰色の街着、授業用の普段着もあります。ジュリア・ラトレッジ・ペンドルトンにとっては、そんなの大した衣装持ちではないのかもしれません。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">でも、ジェルーシャ・アボットにとっては――ああ、もう！</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">きっと今ごろ、なんて軽薄でうわべだけのちっぽけな娘だろう、女の子を教育するなんてお金の無駄だ、と思っていらっしゃるでしょうね。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">でも、ダディ、もし一生ずっと格子縞のギンガムばかり着せられていたら、私の気持ちがわかるはずです。そして高校へ行き始めたとき、私はその格子縞よりもっとひどい時代に入ったんです。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">救済箱のお古。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">あのみじめな救済箱の服を着て学校へ行くのが、どれほど恐ろしかったことか、あなたにはわからないでしょう。きっと教室では、最初にその服を着ていた女の子の隣の席にされて、その子はひそひそ笑いながら、ほかの子たちにそれを教えるに決まっている、そう思っていました。敵の着古しを身につける苦さは、魂にまで染み込みます。もしこの先一生、絹の靴下をはいて暮らしたとしても、その傷あとを消し去ることはできないんじゃないかと思います。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">最新戦況速報！</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">前線からの報告。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">十一月十三日木曜、第四夜警の刻、ハンニバルはローマ軍前衛を撃破し、カルタゴ軍を率いて山を越え、カシリヌムの平原へ進出した。軽装のヌミディア騎兵一隊が、クィントゥス・ファビウス・マクシムスの歩兵隊と交戦。二度の戦闘と小競り合い。ローマ軍は多大な損害を出して退却。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">謹んで申し上げます。<br>前線特派員<br>J・アボット</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">追伸　お返事を期待してはいけないし、質問でお煩わせしてもいけないと注意されているのは承知しています。でも、ダディ、こんどだけ教えてください――あなたはものすごくお年寄りなんですか、それとも少し年上なだけ？　それに、すっかり禿げているんですか、それとも少し薄いだけ？　幾何の定理みたいに抽象的なまま、あなたのことを考えるのはとても難しいんです。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">「背の高いお金持ちの男の人で、女の子は嫌いだけれど、かなり生意気な一人の女の子にはとても気前がいい」</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">さて、その人はどんな顔をしているのでしょう？</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">ご返事乞う。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">十二月十九日</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">親愛なるダディ・ロング・レッグズ様</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">私の質問に、お返事くださらなかったのですね。とても大事なことだったのに。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">あなたは禿げているんですか？</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">私は、あなたがどんなふうか、ちゃんとすっかり思い描いているんです――とても満足のいく具合に――でも、頭のてっぺんまで来ると、そこで行き詰まってしまうの。白髪なのか、黒髪なのか、灰色が少し混じっているのか、それともひょっとして全然ないのか、決められません。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">これがあなたの肖像です。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">問題はここなんです。髪をつけ足すべきでしょうか？</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">あなたの目の色を知りたいですって？　灰色です。それから眉毛はひさしみたいに張り出していて（小説ではbeetlingっていうんでしょう）、口はまっすぐな一本線で、口角が少し下がる癖があるの。ああ、ほら、わかってるんです！　あなたは気の短い、ぴりっとした年寄りなんです。</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">（礼拝堂の鐘。）</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">午後九時四十五分</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">私は新しい絶対の規則を作りました。朝どんなに筆記の復習が待っていようと、夜は決して、決して勉強しないこと。そのかわり、ただ普通の本を読むんです――だって、ねえ、私の後ろには空白の十八年があるんですもの。ダディ、私の頭の中がどれほど底なしの無知の淵か、あなたには信じられないでしょう。私自身、いまやっとその深さに気づき始めたところなんです。きちんとした家族と家庭と友だちと図書室を持つたいていの女の子なら、自然に身について知っているようなことを、私は一度も聞いたことがなかったのです。たとえば――</p>
+<p class="mb-7 leading-9 text-[1.05rem] text-ink">私は『マザー・グース』も『デイヴィッド・コパフィールド』も『アイヴァンホー』も『シンデレラ』も『青ひげ』も『ロビンソン・クルーソー』も『ジェーン・エア』も『不思議の国のアリス』も、ラドヤード・キップリングの作品も一言も読んだことがありませんでした。ヘンリー八世が二度以上結婚していたことも、シェリーが詩人だったことも知りませんでした。人間が昔は猿だったとか、エデンの園が美しい神話だとか、そんなことも知らなかったんです。私は知らなかったんです……</p>
+                </div>
+            </div>
+
+            <div class="mt-16 p-6 rounded-2xl border-l-4 border-amber bg-amber/5 text-sm text-slate italic">
+                <p>翻訳注記: この翻訳は AI によって自動生成されたものであり、不自然な表現や誤りが含まれている可能性があります。原典の格調高い雰囲気を再現するよう努めていますが、正確な内容は原語版をご参照ください。</p>
+            </div>
+
+            <div class="mt-12 flex justify-center gap-4">
+                <a href="https://garyohosu.github.io/WorldClassicsJP/authors/jean-webster/" class="px-6 py-2 rounded-full border border-line hover:border-pine hover:text-pine transition-all">作者ページへ</a>
+                <a href="https://garyohosu.github.io/WorldClassicsJP/works/daddy-long-legs/" class="px-6 py-2 rounded-full border border-line hover:border-pine hover:text-pine transition-all">作品目次へ</a>
+            </div>
+
+            <div class="mt-12 text-center">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6743751614716161" data-ad-slot="bottom" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            </div>
+        </article>
+        
+    </main>
+
+    <footer class="py-12 border-t border-line/50 mt-12 bg-paper/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-center md:text-left">
+                <p class="jp-title text-lg mb-2">WorldClassicsJP</p>
+                <p class="text-xs text-slate">パブリックドメイン文学を AI で日本語に。</p>
+            </div>
+            <div class="flex gap-6 text-sm text-slate">
+                <a href="https://garyohosu.github.io/WorldClassicsJP/" class="hover:text-pine">ホーム</a>
+                <a href="https://garyohosu.github.io/WorldClassicsJP/authors/" class="hover:text-pine">作者一覧</a>
+                <a href="https://garyohosu.github.io/WorldClassicsJP/about/" class="hover:text-pine">このサイトについて</a>
+            </div>
+            <p class="text-[10px] text-slate/50">© 2026 WorldClassicsJP Project. Works are in public domain.</p>
+        </div>
+    </footer>
+
+    <script>
+    gsap.registerPlugin(ScrollTrigger);
+    const lenis = new Lenis({
+        duration: 1.2,
+        smoothWheel: true
+    });
+    function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    gsap.utils.toArray('.reveal').forEach((el) => {
+        gsap.from(el, {
+            y: 30,
+            opacity: 0,
+            duration: 0.8,
+            ease: 'power2.out',
+            scrollTrigger: {
+                trigger: el,
+                start: 'top 85%'
+            }
+        });
+    });
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</body>
+</html>

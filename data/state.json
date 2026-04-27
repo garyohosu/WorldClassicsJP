@@ -3,12 +3,12 @@
   "current_work_id": 8,
   "current_part": 3,
   "current_segment_id": "",
-  "current_stage": "idle",
+  "current_stage": "publish",
   "current_work_status": "active",
   "last_processed_date": "2026-04-10",
-  "last_run_id": "run-2026-04-10",
+  "last_run_id": "run-2026-04-28",
   "translate_retry_count": 0,
   "consecutive_fail_days": 0,
   "publish_retry_count": 0,
-  "pre_publish_head": ""
+  "pre_publish_head": "42b41d31e9653e61a421cb800f3b1e98ce2c34a0"
 }

@@ -34,5 +34,11 @@ config.yaml
 /logs/
 /tmp_build/
 
+# local run artifacts
+run*.log
+run*.exit
+run*.exitcode
+.run.*
+
 # 公開サイト（GitHub Pages）
 # 生成物を公開するため追跡対象にする

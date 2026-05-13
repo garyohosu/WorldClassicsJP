@@ -1,14 +1,14 @@
 {
   "next_work_id": 8,
   "current_work_id": 8,
-  "current_part": 14,
+  "current_part": 15,
   "current_segment_id": "",
   "current_stage": "publish",
   "current_work_status": "active",
-  "last_processed_date": "2026-05-13",
+  "last_processed_date": "2026-05-14",
   "last_run_id": "run-2026-05-14",
   "translate_retry_count": 0,
   "consecutive_fail_days": 0,
   "publish_retry_count": 0,
-  "pre_publish_head": "b48a04388160ef1392e0226ced4cad06cd2e4a5c"
+  "pre_publish_head": "c24f3a12f0104ec4c9149d9855460be1ed8414bf"
 }

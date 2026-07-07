@@ -233,7 +233,13 @@ def run(date_str: str, no_git: bool = False) -> dict:
         run_log.save(LOG_DIR / date_str[:4] / date_str[5:7] / date_str[8:10] / f"{lock.run_id}.json")
 
         if not published_parts:
-            return {"status": "exhausted"}
+            return {
+                "status": "exhausted",
+                "current_work_id": state.current_work_id,
+                "next_work_id": state.next_work_id,
+                "last_processed_date": state.last_processed_date,
+                "reason": "No more pd_verified works remain in works_master.json",
+            }
 
         return {
             "status": "ok",

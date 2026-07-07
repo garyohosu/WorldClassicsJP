@@ -118,6 +118,5 @@ openclaw cron add \
   --cron "0 3 * * *" \
   --tz "Asia/Tokyo" \
   --session isolated \
-  --message "作業ディレクトリ /home/garyo/.openclaw/workspace/WorldClassicsJP で PYTHONPATH=src python3 -m worldclassicsjp.run を実行。成功時は公開URLとcommitを報告、失敗時は要点3行で報告。"
+  --message "作業ディレクトリ /home/garyo/.openclaw/workspace/WorldClassicsJP で PYTHONPATH=src python3 -m worldclassicsjp.run を実行。status=ok なら公開URLとcommit、status=exhausted なら作品キュー枯渇と current_work_id/next_work_id、status=error なら要点3行を報告。"
 ```
-

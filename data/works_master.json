@@ -118,5 +118,20 @@
     "pd_verified": true,
     "length_class": "medium",
     "parts_total": 0
+  },
+  {
+    "work_id": 9,
+    "work_slug": "pride-and-prejudice",
+    "title": "Pride and Prejudice",
+    "title_ja": "高慢と偏見",
+    "author_name": "Jane Austen",
+    "author_name_ja": "ジェイン・オースティン",
+    "author_slug": "jane-austen",
+    "source_url": "https://www.gutenberg.org/cache/epub/1342/pg1342.txt",
+    "source_type": "text_url",
+    "death_year": 1817,
+    "pd_verified": true,
+    "length_class": "long",
+    "parts_total": 0
   }
 ]

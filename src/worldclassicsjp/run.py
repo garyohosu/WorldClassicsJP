@@ -100,25 +100,58 @@ def translate_to_ja(text_en: str, title: str, author: str) -> TranslationResult:
     )
     try:
         res = subprocess.run(["codex", "exec", prompt], capture_output=True, text=True, timeout=600)
-        if res.returncode == 0 and res.stdout:
-            body = res.stdout
-            s = body.find("{")
-            e = body.rfind("}")
-            if s >= 0 and e > s:
-                data = json.loads(body[s : e + 1])
-                return TranslationResult(
-                    translated_text=str(data.get("translated_text", "")).strip(),
-                    summary=str(data.get("summary", "")).strip(),
-                    keywords=[str(x) for x in data.get("keywords", [])],
-                )
-    except Exception:
-        pass
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise RuntimeError(f"翻訳コマンドを実行できませんでした: {exc}") from exc
 
-    return TranslationResult(
-        translated_text="（翻訳生成に失敗しました。次回再実行してください）\n\n" + text_en[:1200],
-        summary="自動翻訳一時失敗",
-        keywords=["文学", "翻訳"],
+    if res.returncode != 0:
+        detail = (res.stderr or res.stdout or "詳細なし").strip()[-500:]
+        raise RuntimeError(f"翻訳コマンドが失敗しました (exit={res.returncode}): {detail}")
+    if not res.stdout.strip():
+        raise RuntimeError("翻訳コマンドの出力が空です")
+
+    body = res.stdout
+    s = body.find("{")
+    e = body.rfind("}")
+    if s < 0 or e <= s:
+        raise ValueError("翻訳コマンドの出力に JSON オブジェクトがありません")
+    try:
+        data = json.loads(body[s : e + 1])
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"翻訳コマンドの JSON が不正です: {exc}") from exc
+
+    result = TranslationResult(
+        translated_text=str(data.get("translated_text", "")).strip(),
+        summary=str(data.get("summary", "")).strip(),
+        keywords=[str(x) for x in data.get("keywords", [])],
     )
+    validate_translation(text_en, result)
+    return result
+
+
+def validate_translation(source_text: str, result: TranslationResult) -> None:
+    """明らかな欠落・原文混入を公開工程へ渡さない。"""
+    translated = result.translated_text.strip()
+    if not translated:
+        raise ValueError("翻訳本文が空です")
+    if not result.summary:
+        raise ValueError("翻訳の要約が空です")
+
+    # 日本語訳は英語原文より短くなり得るが、25%未満なら途中欠落の可能性が高い。
+    source_compact = re.sub(r"\s+", "", source_text)
+    translated_compact = re.sub(r"\s+", "", translated)
+    if len(source_compact) >= 400 and len(translated_compact) < len(source_compact) * 0.25:
+        raise ValueError(
+            f"翻訳本文が原文に対して短すぎます "
+            f"(source={len(source_compact)}, translated={len(translated_compact)})"
+        )
+
+    japanese_chars = len(re.findall(r"[ぁ-んァ-ヶ一-龠々〆ヵヶ]", translated))
+    ascii_letters = len(re.findall(r"[A-Za-z]", translated))
+    if len(translated_compact) >= 200 and japanese_chars < ascii_letters:
+        raise ValueError(
+            f"翻訳本文に英語原文が多く残っています "
+            f"(japanese={japanese_chars}, ascii_letters={ascii_letters})"
+        )
 
 
 def run(date_str: str, no_git: bool = False) -> dict:

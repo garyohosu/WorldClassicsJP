@@ -232,26 +232,26 @@ def run(date_str: str, no_git: bool = False) -> dict:
             pub.generate_sitemap(published)
             pub.reflect_to_production()
 
+            # 状態更新も成果物と同じコミットへ含める。push 後に保存すると、
+            # 次回の新規 checkout が古い part を再実行して公開済みページを上書きする。
+            state.current_stage = Stage.IDLE
+            state.current_work_status = WorkStatus.ACTIVE
+            state.last_processed_date = date_str
+            state.pre_publish_head = ""
+            if has_more:
+                state.next_work_id = w.work_id
+                state.current_part = current_part + 1
+            else:
+                state.next_work_id = w.work_id + 1
+                state.current_part = 1
+            state.save(STATE_PATH)
+
             pushed = False
             if not no_git:
                 pushed = pub.commit_and_push(message=f"daily: {date_str} publish {w.work_slug} part-{current_part:03d}")
                 if not pushed:
                     pub.rollback(pre_head)
                     raise RuntimeError("git commit/push failed")
-
-            state.current_stage = Stage.IDLE
-            state.current_work_status = WorkStatus.ACTIVE
-            state.last_processed_date = date_str
-            state.pre_publish_head = ""
-            if has_more:
-                # まだテキストが残っている → 同じ作品の次のパートへ
-                state.next_work_id = w.work_id
-                state.current_part = current_part + 1
-            else:
-                # 作品完了 → 次の作品へ
-                state.next_work_id = w.work_id + 1
-                state.current_part = 1
-            state.save(STATE_PATH)
 
             published_parts.append({
                 "work": w.work_slug,

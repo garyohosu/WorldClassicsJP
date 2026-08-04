@@ -93,6 +93,49 @@ def fetch_source_text(url: str, limit_chars: int, offset: int = 0) -> tuple[str,
     return chunk, has_more
 
 
+def select_complete_segment(text: str, limit_chars: int, offset: int = 0) -> tuple[str, bool, int]:
+    """段落を途中で切らずに、次の翻訳範囲と次回開始位置を返す。"""
+    if offset < 0:
+        raise ValueError("offset は 0 以上でなければなりません")
+    if limit_chars <= 0:
+        raise ValueError("limit_chars は正の整数でなければなりません")
+    if offset >= len(text):
+        return "", False, offset
+
+    end = min(offset + limit_chars, len(text))
+    if end < len(text):
+        # 最大もう1日分だけ探索し、段落境界まで含める。これにより固定文字数の
+        # 境界で単語や文を欠落させず、次回は返した end から正確に再開できる。
+        paragraph_end = text.find("\n\n", end, min(len(text), end + limit_chars))
+        if paragraph_end >= 0:
+            end = paragraph_end
+
+    chunk = text[offset:end].strip()
+    has_more = end < len(text)
+    return chunk, has_more, end
+
+
+def fetch_complete_source_segment(
+    url: str, limit_chars: int, offset: int = 0
+) -> tuple[str, bool, int]:
+    """原文を取得し、完全な段落単位のセグメントを返す。"""
+    r = requests.get(url, timeout=45, headers={"User-Agent": "WorldClassicsJP/1.0"})
+    r.raise_for_status()
+    text = r.text
+    text = re.sub(r"\*\*\*\s*START OF .*?\*\*\*", "", text, flags=re.I | re.S)
+    text = re.sub(r"\*\*\*\s*END OF .*", "", text, flags=re.I | re.S)
+    text = re.sub(r"\n{3,}", "\n\n", text).strip()
+    return select_complete_segment(text, limit_chars, offset)
+
+
+def source_offset(state: State, daily_max_chars: int) -> int:
+    """保存済みの正確な開始位置を優先し、旧状態では従来の計算へ戻る。"""
+    match = re.fullmatch(r"offset-(\d+)", state.current_segment_id)
+    if match:
+        return int(match.group(1))
+    return (state.current_part - 1) * daily_max_chars
+
+
 def translate_to_ja(text_en: str, title: str, author: str) -> TranslationResult:
     prompt = (
         "Translate English literary text to natural Japanese. Return JSON with translated_text, summary, keywords.\n"
@@ -189,8 +232,10 @@ def run(date_str: str, no_git: bool = False) -> dict:
             state.current_work_id = w.work_id
 
             # 長編作品は current_part のオフセットから取得
-            char_offset = (state.current_part - 1) * cfg.daily_max_chars
-            source_text, has_more = fetch_source_text(w.source_url, cfg.daily_max_chars, char_offset)
+            char_offset = source_offset(state, cfg.daily_max_chars)
+            source_text, has_more, next_offset = fetch_complete_source_segment(
+                w.source_url, cfg.daily_max_chars, char_offset
+            )
 
             if not source_text:
                 # テキスト終端（状態不整合）→ 次の作品へ進んでループを続ける
@@ -241,9 +286,11 @@ def run(date_str: str, no_git: bool = False) -> dict:
             if has_more:
                 state.next_work_id = w.work_id
                 state.current_part = current_part + 1
+                state.current_segment_id = f"offset-{next_offset}"
             else:
                 state.next_work_id = w.work_id + 1
                 state.current_part = 1
+                state.current_segment_id = ""
             state.save(STATE_PATH)
 
             pushed = False

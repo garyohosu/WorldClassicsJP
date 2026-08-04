@@ -3,7 +3,9 @@ import subprocess
 
 import pytest
 
-from worldclassicsjp.run import translate_to_ja
+from worldclassicsjp.models.enums import Stage, WorkStatus
+from worldclassicsjp.models.state import State
+from worldclassicsjp.run import select_complete_segment, source_offset, translate_to_ja
 
 
 def completed(stdout="", stderr="", returncode=0):
@@ -71,3 +73,31 @@ def test_英語原文の混入を拒否する(monkeypatch):
 
     with pytest.raises(ValueError, match="英語原文"):
         translate_to_ja(source, "Title", "Author")
+
+
+def test_段落末尾まで拡張し次回位置を返す():
+    text = "first paragraph.\n\nsecond paragraph is longer.\n\nthird."
+
+    chunk, has_more, next_offset = select_complete_segment(text, 30, 0)
+
+    assert chunk == "first paragraph.\n\nsecond paragraph is longer."
+    assert has_more is True
+    assert text[next_offset:].startswith("\n\nthird.")
+
+
+def test_保存済みoffsetを固定文字数計算より優先する():
+    state = State(
+        next_work_id=9,
+        current_work_id=9,
+        current_part=10,
+        current_segment_id="offset-108177",
+        current_stage=Stage.IDLE,
+        current_work_status=WorkStatus.ACTIVE,
+        last_processed_date="2026-08-05",
+        last_run_id="run-2026-08-05",
+        translate_retry_count=0,
+        consecutive_fail_days=0,
+        publish_retry_count=0,
+    )
+
+    assert source_offset(state, 12000) == 108177

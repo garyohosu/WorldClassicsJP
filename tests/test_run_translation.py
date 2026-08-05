@@ -5,7 +5,12 @@ import pytest
 
 from worldclassicsjp.models.enums import Stage, WorkStatus
 from worldclassicsjp.models.state import State
-from worldclassicsjp.run import select_complete_segment, source_offset, translate_to_ja
+from worldclassicsjp.run import (
+    fetch_complete_source_segment,
+    select_complete_segment,
+    source_offset,
+    translate_to_ja,
+)
 
 
 def completed(stdout="", stderr="", returncode=0):
@@ -101,3 +106,20 @@ def test_保存済みoffsetを固定文字数計算より優先する():
     )
 
     assert source_offset(state, 12000) == 108177
+
+
+def test_取得原文の改行をLFへ統一してoffsetを安定させる(monkeypatch):
+    class Response:
+        text = "*** START OF TEST ***\r\nfirst paragraph.\r\n\r\nsecond paragraph.\r\n\r\nthird.\r\n*** END OF TEST ***"
+
+        def raise_for_status(self):
+            return None
+
+    monkeypatch.setattr("worldclassicsjp.run.requests.get", lambda *args, **kwargs: Response())
+
+    chunk, has_more, next_offset = fetch_complete_source_segment("https://example.com", 20, 0)
+
+    assert "\r" not in chunk
+    assert chunk == "first paragraph.\n\nsecond paragraph."
+    assert has_more is True
+    assert next_offset == len("first paragraph.\n\nsecond paragraph.")

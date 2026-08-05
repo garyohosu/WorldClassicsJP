@@ -83,7 +83,9 @@ def fetch_source_text(url: str, limit_chars: int, offset: int = 0) -> tuple[str,
     """テキストを取得し、(chunk, has_more) のタプルを返す"""
     r = requests.get(url, timeout=45, headers={"User-Agent": "WorldClassicsJP/1.0"})
     r.raise_for_status()
-    text = r.text
+    # Project Gutenberg の応答は配信経路によって LF / CRLF が変わり得る。
+    # 保存済み offset と段落境界を安定させるため、ヘッダー除去より先に LF へ統一する。
+    text = r.text.replace("\r\n", "\n").replace("\r", "\n")
     text = re.sub(r"\*\*\*\s*START OF .*?\*\*\*", "", text, flags=re.I | re.S)
     text = re.sub(r"\*\*\*\s*END OF .*", "", text, flags=re.I | re.S)
     text = re.sub(r"\n{3,}", "\n\n", text)
@@ -121,7 +123,9 @@ def fetch_complete_source_segment(
     """原文を取得し、完全な段落単位のセグメントを返す。"""
     r = requests.get(url, timeout=45, headers={"User-Agent": "WorldClassicsJP/1.0"})
     r.raise_for_status()
-    text = r.text
+    # Project Gutenberg の応答は配信経路によって LF / CRLF が変わり得る。
+    # 保存済み offset と段落境界を安定させるため、ヘッダー除去より先に LF へ統一する。
+    text = r.text.replace("\r\n", "\n").replace("\r", "\n")
     text = re.sub(r"\*\*\*\s*START OF .*?\*\*\*", "", text, flags=re.I | re.S)
     text = re.sub(r"\*\*\*\s*END OF .*", "", text, flags=re.I | re.S)
     text = re.sub(r"\n{3,}", "\n\n", text).strip()

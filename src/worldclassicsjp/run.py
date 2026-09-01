@@ -146,7 +146,13 @@ def translate_to_ja(text_en: str, title: str, author: str) -> TranslationResult:
         f"title={title}\nauthor={author}\n\n{text_en[:9000]}"
     )
     try:
-        res = subprocess.run(["codex", "exec", prompt], capture_output=True, text=True, timeout=600)
+        res = subprocess.run(
+            ["codex", "exec", "-"],
+            input=prompt,
+            capture_output=True,
+            text=True,
+            timeout=600,
+        )
     except (OSError, subprocess.TimeoutExpired) as exc:
         raise RuntimeError(f"翻訳コマンドを実行できませんでした: {exc}") from exc
 
